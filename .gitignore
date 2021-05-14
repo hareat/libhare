@@ -1,3 +1,6 @@
+# All files in any directories named tmp
+tmp/
+
 # Prerequisites
 *.d
 

@@ -1,0 +1,58 @@
+#ifndef HARE_STRPRINTF
+#define HARE_STRPRINTF
+
+#include <stdarg.h>	// va_*() vsnprintf()
+#include <string>
+
+/***************************************************************************
+ * Instead of sprintf for char[] printf for a string.
+ *
+ * @author Hannes.Reisinger@HaRe.at
+ **************************************************************************/
+namespace hare {
+	// worst case this would return the format string but does not throw an error
+	inline std::string strprintf(const char *format, ...) {
+		if (format == nullptr || *format == '\0')
+			return std::string();
+
+		// depends on glibc >= 2.1 (earlier versions return -1)
+		va_list ap;
+		va_start(ap, format);
+		// return value is the number of characters excluding the terminating null byte
+		int length = vsnprintf(nullptr, 0, format, ap);
+		va_end(ap);
+
+		if (length < 0)	// error condition
+			return format;
+
+		std::string result(length + 1, '\0');
+		va_start(ap, format);
+		length = vsnprintf(&result[0], result.size(), format, ap);
+		va_end(ap);
+
+		if (length < 0)	// error condition
+			return format;
+		// above we have sized to length + 1
+		// so everyting else is strange and completely unexpected
+		if (length >= result.size())
+			return format;
+
+		result.resize(length);
+		return result;
+	}
+
+	// worst case this would return an empty or truncated string
+	template <const size_t size>
+	static std::string strprintf(const char *format, ...) {
+		char buffer[size] = {0};
+		// do not care about more information and return value
+		// this should not bother the real exception
+		va_list ap;
+		va_start(ap, format);
+		vsnprintf(buffer, size, format, ap);
+		va_end(ap);
+		return std::string(buffer);
+	}
+}	// namespace hare
+
+#endif	// HARE_STRPRINTF

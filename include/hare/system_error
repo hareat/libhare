@@ -1,0 +1,28 @@
+#ifndef HARE_SYSTEM_ERROR
+#define HARE_SYSTEM_ERROR
+
+#include <system_error>
+
+#include <hare/strprintf>
+
+#include <errno.h>
+
+/***************************************************************************
+ * In most cases I want to create a system_error with a system_category
+ * and use the current errno.
+ *
+ * @author Hannes.Reisinger@HaRe.at
+ **************************************************************************/
+namespace hare {
+	struct system_error : public std::system_error {
+		system_error() : std::system_error(errno, std::system_category()) {}
+		system_error(const std::string& what) : std::system_error(errno, std::system_category(), what) {}
+		system_error(const char *what) : std::system_error(errno, std::system_category(), what) {}
+		template<typename ... Args>
+		system_error(const char *format, Args ... args)
+			: std::system_error(errno, std::system_category()
+			, strprintf<256>(format, args ...)) {}
+	};
+}	// namespace hare
+
+#endif	// HARE_SYSTEM_ERROR

@@ -1,0 +1,40 @@
+#ifndef HARE_STDEXCEPT
+#define HARE_STDEXCEPT
+
+#include <stdexcept>
+
+#include <hare/strprintf>
+
+/***************************************************************************
+ * In most cases I want to create an invalid_argument based on current
+ * information.
+ *
+ * @author Hannes.Reisinger@HaRe.at
+ **************************************************************************/
+namespace hare {
+	struct invalid_argument : public std::invalid_argument {
+		template<typename ... Args>
+		invalid_argument(const char *format, Args ... args)
+			: std::invalid_argument(strprintf<256>(format, args ...)) {}
+	};
+}	// namespace hare
+
+#define CHECK_NOT_NULL_ARG1(a) \
+	if (a == NULL) \
+		throw hare::invalid_argument("%s(%s is NULL)", __func__, #a);
+
+#define CHECK_NOT_NULL_ARG2(a, b) \
+	if (a == NULL || b == NULL) { \
+		if (a == NULL && b == NULL) \
+			throw hare::invalid_argument("%s(%s and %s are NULL)", __func__, #a, #b); \
+		throw hare::invalid_argument("%s(%s is NULL)", __func__, (a == NULL) ? #a : #b); \
+	}
+
+#define CHECK_NOT_NULL_ARG3(a, b, c) \
+	if (a == NULL || b == NULL || c == NULL) { \
+		if (a == NULL && b == NULL && c == NULL) \
+			throw hare::invalid_argument("%s(%s, %s and %s are NULL)", __func__, #a, #b, #c); \
+		throw hare::invalid_argument("%s(%s is NULL)", __func__, (a == NULL) ? #a : ((b == NULL) ? #b : #c)); \
+	}
+
+#endif	// HARE_STDEXCEPT
