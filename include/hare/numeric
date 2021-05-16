@@ -1,0 +1,41 @@
+#ifndef HARE_NUMERIC
+#define HARE_NUMERIC
+
+#include <numeric>
+
+/***************************************************************
+ * hare/numeric handy convenience methods for numeric.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	/***************************************************************
+	 * Very often I want to iterate through a whole container so
+	 * shortcuts to the great STL algorithms are convenient.
+	 ***************************************************************/
+
+	template <class Container, class T>
+	T accumulate(const Container& container, T init) {
+		return std::accumulate(container.begin(), container.end(), init);
+	}
+	template<class Container, class T>
+	T accumulate(Container& container, T init) {
+		return std::accumulate(container.begin(), container.end(), init);
+	}
+	template <class Container, class T, class BinaryOperation>
+	T accumulate(const Container& container, T init, BinaryOperation op) {
+		return std::accumulate(container.begin(), container.end(), init,op);
+	}
+	template<class Container, class T, class BinaryOperation>
+	T accumulate(Container& container, T init, BinaryOperation op) {
+		return std::accumulate(container.begin(), container.end(), init, op);
+	}
+
+	template<class Container, class T>
+	void iota(Container& container, T init) {
+		std::iota(container.begin(), container.end(), init);
+	}
+}	// namespace hare
+
+#endif	// HARE_NUMERIC

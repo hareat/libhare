@@ -17,7 +17,7 @@ struct TestHareWrapStdio {
 			hare::throws::fputs(data, fp);
 
 			cfp = fp;
-			ASSERT(fileno(cfp) != EOF);	// now we have a file handle
+			ASSERT(fileno(cfp) != EOF);	// we have a valid file handle
 		}	// automatically closes the file
 		EQUAL_D(EOF, fileno(cfp));	// file handle is no longer available
 

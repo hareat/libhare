@@ -1,0 +1,277 @@
+#ifndef HARE_ALGORITHM
+#define HARE_ALGORITHM
+
+#include <algorithm>
+
+/***************************************************************
+ * hare/algorithm handy convenience methods for algorithm.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	/***************************************************************
+	 * Very often I want to iterate through a whole container so
+	 * shortcuts to the great STL algorithms are convenient.
+	 ***************************************************************/
+
+	template<class Container>
+	typename Container::const_iterator adjacent_find(const Container& container) {
+		return std::adjacent_find(container.begin(), container.end());
+	}
+	template<class Container>
+	typename Container::iterator adjacent_find(Container& container) {
+		return std::adjacent_find(container.begin(), container.end());
+	}
+	template<class Container, class BinaryPredicate>
+	typename Container::const_iterator adjacent_find(const Container& container, BinaryPredicate pred) {
+		return std::adjacent_find(container.begin(), container.end(), pred);
+	}
+	template<class Container, class BinaryPredicate>
+	typename Container::iterator adjacent_find(Container& container, BinaryPredicate pred) {
+		return std::adjacent_find(container.begin(), container.end(), pred);
+	}
+
+	template <class Container, class UnaryPredicate>
+	bool all_of(const Container& container, UnaryPredicate pred) {
+		return std::all_of(container.begin(), container.end(), pred);
+	}
+
+	template <class Container, class UnaryPredicate>
+	bool any_of(const Container& container, UnaryPredicate pred) {
+		return std::any_of(container.begin(), container.end(), pred);
+	}
+
+	template<class Container, class T>
+	bool binary_search(const Container& container, const T& value) {
+		return std::binary_search(container.begin(), container.end(), value);
+	}
+	template<class Container, class T, class Compare>
+	bool binary_search(const Container& container, const T& value, Compare comp) {
+		return std::binary_search(container.begin(), container.end(), value, comp);
+	}
+
+	template<class Container, class OutputIterator>
+	OutputIterator copy(const Container& container, OutputIterator result) {
+		return std::copy(container.begin(), container.end(), result);
+	}
+
+	template<class Container, class OutputIterator>
+	OutputIterator copy_backward(const Container& container, OutputIterator result) {
+		return std::copy_backward(container.begin(), container.end(), result);
+	}
+
+	template<class Container, class OutputIterator, class UnaryPredicate>
+	OutputIterator copy_if(const Container& container, OutputIterator result, UnaryPredicate pred) {
+		return std::copy_if(container.begin(), container.end(), result, pred);
+	}
+
+	// no advantage in wrapping copy_n
+
+	template<class Container, class T>
+	typename Container::difference_type count(const Container& container, const T& value) {
+		return std::count(container.begin(), container.end(), value);
+	}
+
+	template<class Container, class UnaryPredicate>
+	typename Container::difference_type count_if(const Container& container, UnaryPredicate pred) {
+		return std::count_if(container.begin(), container.end(), pred);
+	}
+
+	template<class Container1, class Container2>
+	bool equal(const Container1& container1, const Container2& container2) {
+		return std::equal(container1.begin(), container1.end(), container2.begin());
+	}
+	template<class Container1, class Container2, class BinaryPredicate>
+	bool equal(const Container1& container1, const Container2& container2, BinaryPredicate pred) {
+		return std::equal(container1.begin(), container1.end(), container2.begin(), pred);
+	}
+
+	template<class Container, class T>
+	void fill(Container& container, const T& value) {
+		std::fill(container.begin(), container.end(), value);
+	}
+
+	// no advantage in wrapping fill_n
+
+	template<class Container, class T>
+	typename Container::const_iterator find(const Container& container, const T& value) {
+		return std::find(container.begin(), container.end(), value);
+	}
+	template<class Container, class T>
+	typename Container::iterator find(Container& container, const T& value) {
+		return std::find(container.begin(), container.end(), value);
+	}
+	template<class Container, class UnaryPredicate>
+	typename Container::const_iterator find_if(const Container& container, UnaryPredicate pred) {
+		return std::find_if(container.begin(), container.end(), pred);
+	}
+	template<class Container, class UnaryPredicate>
+	typename Container::iterator find_if(Container& container, UnaryPredicate pred) {
+		return std::find_if(container.begin(), container.end(), pred);
+	}
+
+	template<class Container, class UnaryFunction>
+	UnaryFunction for_each(const Container& container, UnaryFunction fn) {
+		return std::for_each(container.begin(), container.end(), fn);
+	}
+	template<class Container, class UnaryFunction>
+	UnaryFunction for_each(Container& container, UnaryFunction fn) {
+		return std::for_each(container.begin(), container.end(), fn);
+	}
+
+	template <class Container, class Generator>
+	void generate(Container& container, Generator gen) {
+		return std::generate(container.begin(), container.end(), gen);
+	}
+
+	// no advantage in wrapping generate_n
+
+	template<class Container1, class Container2>
+	bool includes(const Container1& container1, const Container2& container2) {
+		return std::includes(container1.begin(), container1.end(), container2.begin(), container2.end());
+	}
+	template<class Container1, class Container2, class Compare>
+	bool includes(const Container1& container1, const Container2& container2, Compare comp) {
+		return std::includes(container1.begin(), container1.end(), container2.begin(), container2.end(), comp);
+	}
+
+	template <class Container, class UnaryPredicate>
+	bool none_of(const Container& container, UnaryPredicate pred) {
+		return std::none_of(container.begin(), container.end(), pred);
+	}
+
+	template <class Container, class T>
+	void replace(Container& container, const T& old_value, const T& new_value) {
+		std::replace(container.begin(), container.end(), old_value, new_value);
+	}
+
+	template<class Container1, class Container2>
+	typename Container1::const_iterator search(const Container1& container1, const Container2& container2) {
+		return std::search(container1.begin(), container1.end(), container2.begin(), container2.end());
+	}
+	template<class Container1, class Container2>
+	typename Container1::iterator search(Container1& container1, const Container2& container2) {
+		return std::search(container1.begin(), container1.end(), container2.begin(), container2.end());
+	}
+	template<class Container1, class Container2, class BinaryPredicate>
+	typename Container1::const_iterator search(const Container1& container1, const Container2& container2, BinaryPredicate pred) {
+		return std::search(container1.begin(), container1.end(), container2.begin(), container2.end(), pred);
+	}
+	template<class Container1, class Container2, class BinaryPredicate>
+	typename Container1::iterator search(Container1& container1, const Container2& container2, BinaryPredicate pred) {
+		return std::search(container1.begin(), container1.end(), container2.begin(), container2.end(), pred);
+	}
+
+	// no advantage in wrapping search_n
+
+	template<class Container1, class Container2, class OutputIterator>
+	OutputIterator set_difference(const Container1& container1, const Container2& container2, OutputIterator result) {
+		return std::set_difference(container1.begin(), container1.end(), container2.begin(), container2.end(), result);
+	}
+	template<class Container1, class Container2, class OutputIterator, class Compare>
+	OutputIterator set_difference(const Container1& container1, const Container2& container2, OutputIterator result, Compare comp) {
+		return std::set_difference(container1.begin(), container1.end(), container2.begin(), container2.end(), result, comp);
+	}
+
+	template<class Container>
+	void sort(Container& container)	{
+		std::sort(container.begin(), container.end());
+	}
+	template<class Container, class Compare>
+	void sort(Container& container, Compare comp)	{
+		std::sort(container.begin(), container.end(), comp);
+	}
+
+	template<class Container, class OutputIterator, class UnaryOperation>
+	OutputIterator transform(const Container& container, OutputIterator result, UnaryOperation op) {
+		return std::transform(container.begin(), container.end(), result, op);
+	}
+	template<class Container, class InputIterator, class OutputIterator, class BinaryOperation>
+	OutputIterator transform(const Container& container, InputIterator first, OutputIterator result, BinaryOperation op) {
+		return std::transform(container.begin(), container.end(), first, result, op);
+	}
+
+
+	/***************************************************************
+	 * Some small extensions.
+	 ***************************************************************/
+
+	template<class InputIterator, class T>
+	bool any_of(InputIterator first, InputIterator last, const T& value) {
+		return std::find(first, last, value) != last;
+	}
+	template<class Container, class T>
+	bool any_of(const Container& container, const T& value) {
+		return hare::any_of(container.begin(), container.end(), value);
+	}
+
+	template<class InputIterator, class T>
+	bool none_of(InputIterator first, InputIterator last, const T& value) {
+		return std::find(first, last, value) == last;
+	}
+	template<class Container, class T>
+	bool none_of(const Container& container, const T& value) {
+		return hare::none_of(container.begin(), container.end(), value);
+	}
+
+
+	/***************************************************************
+	 * Algorithms which also modifies the size of the container.
+	 ***************************************************************/
+
+	// @return true if the container size was modified, false otherwise.
+	template<class Container, class T>
+	bool remove(Container& container, const T& value) {
+		typename Container::iterator old_end = container.end();
+		typename Container::iterator new_end = std::remove(container.begin(), old_end, value);
+		if (new_end != old_end) {
+			container.erase(new_end, old_end);
+			return true;
+		} else
+			return false;
+	}
+
+	// @return true if the container size was modified, false otherwise.
+	template<class Container, class UnaryPredicate>
+	bool remove_if(Container& container, UnaryPredicate pred) {
+		typename Container::iterator old_end = container.end();
+		typename Container::iterator new_end = std::remove_if(container.begin(), old_end, pred);
+		if (new_end != old_end) {
+			container.erase(new_end, old_end);
+			return true;
+		} else
+			return false;
+	}
+
+	// @return a copy of the container without elements which are equal to value.
+	template<class Container, class T>
+	Container remove_copy(const Container& container, const T& value) {
+		Container copy(container);
+		hare::remove(copy, value);
+		return copy;	// maybe return std::move(copy);
+	}
+
+	// @return a copy of the container without elements for which pred returns true.
+	template<class Container, class UnaryPredicate>
+	Container remove_copy_if(const Container& container, UnaryPredicate pred) {
+		Container copy(container);
+		hare::remove_if(copy, pred);
+		return copy;	// maybe return std::move(copy);
+	}
+
+	// @return true if the container size was modified, false otherwise.
+	template<class Container>
+	bool unique(Container& container)
+	{
+		typename Container::iterator old_end = container.end();
+		typename Container::iterator new_end = std::unique(container.begin(), old_end);
+		if (new_end != old_end) {
+			container.erase(new_end, old_end);
+			return true;
+		} else
+			return false;
+	}
+}	// namespace hare
+
+#endif	// HARE_ALGORITHM

@@ -3,9 +3,6 @@
 
 #include <stdio.h>
 
-#include <hare/stdexcept>	// CHECK_NOT_NULL_ARG
-#include <hare/system_error>
-
 /***************************************************************************
  * Throws an exception (derived of std::system_error) in case of any error.
  *
@@ -23,8 +20,12 @@
  * Many of these functions crash if used with a nullptr.
  * Therefore an argument check for null is also added.
  *
- * @author Hannes.Reisinger@HaRe.at
- **************************************************************************/
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************************/
+
+#include <hare/stdexcept>	// CHECK_NOT_NULL_ARG
+#include <hare/system_error>
+
 namespace hare {
 	namespace throws {
 		inline void fclose(FILE *stream) {

@@ -1,14 +1,15 @@
 #ifndef HARE_STRPRINTF
 #define HARE_STRPRINTF
 
+/***************************************************************************
+ * Instead of sprintf for char[] strprintf for std::string.
+ *
+ * @author Hannes Reisinger gitub@HaRe.at
+ **************************************************************************/
+ 
 #include <stdarg.h>	// va_*() vsnprintf()
 #include <string>
 
-/***************************************************************************
- * Instead of sprintf for char[] printf for a string.
- *
- * @author Hannes.Reisinger@HaRe.at
- **************************************************************************/
 namespace hare {
 	// worst case this would return the format string but does not throw an error
 	inline std::string strprintf(const char *format, ...) {
@@ -44,6 +45,9 @@ namespace hare {
 	// worst case this would return an empty or truncated string
 	template <const size_t size>
 	static std::string strprintf(const char *format, ...) {
+		if (format == nullptr || *format == '\0')
+			return std::string();
+
 		char buffer[size] = {0};
 		// do not care about more information and return value
 		// this should not bother the real exception
