@@ -1,7 +1,7 @@
 #include "test.h"
 
-#include <hare/throws/stdio.h>
-#include <hare/wrap/stdio.h>
+#include <hare/throws/cstdio>
+#include <hare/wrap/cstdio>
 
 struct TestHareThrowsStdio {
 	static void test_fclose() {

@@ -1,0 +1,33 @@
+#ifndef HARE_CSTRING
+#define HARE_CSTRING
+
+#include <cstring>
+
+/***************************************************************
+ * hare/cstring handy convenience methods for cstring.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	/***************************************************************
+	 * std functions don't like nullptr.
+	 ***************************************************************/
+
+	inline int strcmp(const char *left, const char *right) {
+		if (left == right)	// maybe both are nullptr
+			return 0;
+		else if (!left)
+			return -1;
+		else if (!right)
+			return 1;
+		else
+			return std::strcmp(left, right);
+	}
+
+	inline size_t strlen(const char *sz) {
+		return sz ? std::strlen(sz) : 0;
+	}
+}	// namespace hare
+
+#endif	// HARE_CSTRING

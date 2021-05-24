@@ -1,0 +1,99 @@
+#ifndef HARE_CSTDLIB
+#define HARE_CSTDLIB
+
+#include <cstdlib>
+
+/***************************************************************
+ * hare/cstdlib handy convenience methods for cstdlib.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	/***************************************************************
+	 * std functions don't like nullptr.
+	 ***************************************************************/
+
+	inline double atof(const char *number) {
+		return number ? std::atof(number) : 0.0;
+	}
+	inline int atoi(const char *number) {
+		return number ? std::atoi(number) : 0;
+	}
+	inline long atol(const char *number) {
+		return number ? std::atol(number) : 0L;
+	}
+	inline long long atoll(const char *number) {
+		return number ? std::atoll(number) : 0LL;
+	}
+
+	inline char* getenv(const char *name) {
+		return name ? std::getenv(name) : nullptr;
+	}
+
+	inline double strtod(const char *number, char **endptr) {
+		if (number)
+			return std::strtod(number, endptr);
+		else {
+			if (endptr)
+				*endptr = const_cast<char*>(number);
+			return 0.0;
+		}
+	}
+	inline float strtof(const char *number, char **endptr) {
+		if (number)
+			return std::strtof(number, endptr);
+		else {
+			if (endptr)
+				*endptr = const_cast<char*>(number);
+			return 0.0;
+		}
+	}
+	inline long strtol(const char *number, char **endptr, int base) {
+		if (number)
+			return std::strtol(number, endptr, base);
+		else {
+			if (endptr)
+				*endptr = const_cast<char*>(number);
+			return 0L;
+		}
+	}
+	inline long double strtold(const char *number, char **endptr) {
+		if (number)
+			return std::strtold(number, endptr);
+		else {
+			if (endptr)
+				*endptr = const_cast<char*>(number);
+			return 0.0;
+		}
+	}
+	inline long long strtoll(const char *number, char **endptr, int base) {
+		if (number)
+			return std::strtoll(number, endptr, base);
+		else {
+			if (endptr)
+				*endptr = const_cast<char*>(number);
+			return 0LL;
+		}
+	}
+	inline unsigned long strtoul(const char *number, char **endptr, int base) {
+		if (number)
+			return std::strtoul(number, endptr, base);
+		else {
+			if (endptr)
+				*endptr = const_cast<char*>(number);
+			return 0L;
+		}
+	}
+	inline unsigned long long strtoull(const char *number, char **endptr, int base) {
+		if (number)
+			return std::strtoull(number, endptr, base);
+		else {
+			if (endptr)
+				*endptr = const_cast<char*>(number);
+			return 0;
+		}
+	}
+}	// namespace hare
+
+#endif	// HARE_CSTDLIB

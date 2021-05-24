@@ -1,7 +1,8 @@
 #include "test.h"
 
-#include <hare/throws/stdio.h>
-#include <hare/wrap/stdio.h>
+#include <hare/fcntl.h>
+#include <hare/throws/cstdio>
+#include <hare/wrap/cstdio>
 
 struct TestHareWrapStdio {
 	static void test_FILE() {
@@ -10,6 +11,7 @@ struct TestHareWrapStdio {
 
 		const char *path = "tmp/TestHareWrapStdio.tmp";
 		const char *data = "Testdata\n";
+		int fd = 0;
 		FILE *cfp = NULL;
 		{
 			hare::wrap::FILE fp(hare::throws::fopen(path, "w"));
@@ -17,9 +19,12 @@ struct TestHareWrapStdio {
 			hare::throws::fputs(data, fp);
 
 			cfp = fp;
-			ASSERT(fileno(cfp) != EOF);	// we have a valid file handle
+			fd = fileno(cfp);
+			ASSERT(fd != EOF);	// we have a valid file handle
+			ASSERT(hare::is_fd_open(fd));
 		}	// automatically closes the file
 		EQUAL_D(EOF, fileno(cfp));	// file handle is no longer available
+		ASSERT(!hare::is_fd_open(fd));
 
 		{
 			hare::wrap::FILE fp(hare::throws::fopen(path, "r"));

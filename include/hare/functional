@@ -1,0 +1,81 @@
+#ifndef HARE_FUNCTIONAL
+#define HARE_FUNCTIONAL
+
+#include <functional>
+
+/***************************************************************
+ * hare/functional handy convenience methods for functional.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+#include <hare/cstring>
+
+namespace hare {
+	/***************************************************************
+	 * Operations are templated instead of the classes (like std)
+	 * and also take care about zero terminated strings.
+	 ***************************************************************/
+
+	struct equal_to {
+		template<typename T>
+		bool operator()(const T& t1, const T& t2) const {
+			return t1 == t2;
+		}
+		bool operator()(const char *sz1, const char *sz2) const {
+			return hare::strcmp(sz1, sz2) == 0;
+		}
+	};
+
+	struct greater {
+		template<typename T>
+		bool operator()(const T& t1, const T& t2) const {
+			return t1 > t2;
+		}
+		bool operator()(const char *sz1, const char *sz2) const {
+			return hare::strcmp(sz1, sz2) > 0;
+		}
+	};
+
+	struct greater_equal {
+		template<typename T>
+		bool operator()(const T& t1, const T& t2) const {
+			return t1 >= t2;
+		}
+		bool operator()(const char *sz1, const char *sz2) const {
+			return hare::strcmp(sz1, sz2) >= 0;
+		}
+	};
+
+	struct less {
+		template<typename T>
+		bool operator()(const T& t1, const T& t2) const {
+			return t1 < t2;
+		}
+		bool operator()(const char *sz1, const char *sz2) const {
+			return hare::strcmp(sz1, sz2) < 0;
+		}
+	};
+
+	struct less_equal {
+		template<typename T>
+		bool operator()(const T& t1, const T& t2) const {
+			return t1 <= t2;
+		}
+		bool operator()(const char *sz1, const char *sz2) const {
+			return hare::strcmp(sz1, sz2) <= 0;
+		}
+	};
+
+	struct not_equal_to {
+		template<typename T>
+		bool operator()(const T& t1, const T& t2) const {
+			return t1 != t2;
+		}
+		bool operator()(const char *sz1, const char *sz2) const {
+			return hare::strcmp(sz1, sz2) != 0;
+		}
+	};
+}	// namespace hare
+
+#endif	// HARE_FUNCTIONAL

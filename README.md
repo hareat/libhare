@@ -22,6 +22,8 @@ For many example usages see subdirectory test/.
     std::cout << hare::any_of(vi, 2));      // prints "1" meaning "true"
     std::cout << hare::accumulate(vi, 0));  // prints "6"
 
+
+
     #include <hare/throws/stdio.h>
     #include <hare/wrap/stdio.h>
     // hare::FILE autmatically closes an open file pointer

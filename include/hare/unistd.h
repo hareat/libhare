@@ -40,10 +40,6 @@ namespace hare {
 	inline unsigned int sleep_w(unsigned int minutes) {
 		return ::sleep(minutes * 604800U);
 	}
-
-	inline bool is_fd_open(int fd) {
-		return ::fcntl(fd, F_GETFD) != -1 || errno != EBADF;
-	}
 }	// namespace hare
 
 #endif	// HARE_UNISTD_H

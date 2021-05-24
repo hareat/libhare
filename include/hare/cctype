@@ -1,10 +1,10 @@
-#ifndef HARE_CTYPE_H
-#define HARE_CTYPE_H
+#ifndef HARE_CCTYPE
+#define HARE_CCTYPE
 
-#include <ctype.h>
+#include <cctype>
 
 /***************************************************************
- * hare/ctype.h handy convenience methods for ctype.h.
+ * hare/cctype handy convenience methods for cctype.
  *
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************/
@@ -13,7 +13,7 @@ namespace hare {
 	// skip leading spaces of a zero terminated string of constant chars.
 	// @return the new starting position of the string.
 	inline const char* skip_space(const char* sz) {
-		while (isspace(*sz)
+		while (std::isspace(*sz)
 			++sz;
 		return sz;
 	}
@@ -21,10 +21,10 @@ namespace hare {
 	// skip leading spaces of a zero terminated string of modifyable chars.
 	// @return the new starting position of the string.
 	inline char* skip_space(char* sz) {
-		while (isspace(*sz)
+		while (std::isspace(*sz)
 			++sz;
 		return sz;
 	}
 }	// namespace hare
 
-#endif	// HARE_CTYPE_H
+#endif	// HARE_CCTYPE

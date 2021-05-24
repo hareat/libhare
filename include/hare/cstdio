@@ -1,0 +1,21 @@
+#ifndef HARE_CSTDIO
+#define HARE_CSTDIO
+
+#include <cstdio>
+
+/***************************************************************
+ * hare/cstdio handy convenience methods for cstdio.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	// only possible if the compiler can deduce the size.
+	// i.e.: char buffer[32]; hare::snprintf(buffer, "%d", 1);
+	template<const size_t size, typename ... Args>
+	int snprintf(char (&buffer)[size], const char *format, Args ... args) {
+		return std::snprintf(buffer, size, format, args ...);
+	}
+}	// namespace hare
+
+#endif	// HARE_CSTDIO
