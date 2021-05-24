@@ -11,7 +11,7 @@ struct TestHareWrapStdio {
 
 		const char *path = "tmp/TestHareWrapStdio.tmp";
 		const char *data = "Testdata\n";
-		int fd = 0;
+		int fd = -1;
 		FILE *cfp = NULL;
 		{
 			hare::wrap::FILE fp(hare::throws::fopen(path, "w"));
@@ -22,7 +22,7 @@ struct TestHareWrapStdio {
 			fd = fileno(cfp);
 			ASSERT(fd != EOF);	// we have a valid file handle
 			ASSERT(hare::is_fd_open(fd));
-		}	// automatically closes the file
+		}	// automatically closes the FILE
 		EQUAL_D(EOF, fileno(cfp));	// file handle is no longer available
 		ASSERT(!hare::is_fd_open(fd));
 

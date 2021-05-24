@@ -5,6 +5,7 @@
 #include "hare/TestFunctional.h"
 #include "hare/TestNumeric.h"
 #include "hare/TestStrprintf.h"
+#include "hare/throws/TestDirent.h"
 #include "hare/throws/TestStdio.h"
 #include "hare/wrap/TestStdio.h"
 
@@ -21,6 +22,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareFunctional::test();
 		TestHareNumeric::test();
 		TestHareStrprintf::test();
+		TestHareThrowsDirent::test();
 		TestHareThrowsStdio::test();
 		TestHareWrapStdio::test();
 

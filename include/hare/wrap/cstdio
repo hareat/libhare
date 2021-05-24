@@ -1,5 +1,5 @@
-#ifndef HARE_WRAP_STDIO_H
-#define HARE_WRAP_STDIO_H
+#ifndef HARE_WRAP_CSTDIO
+#define HARE_WRAP_CSTDIO
 
 #include <cstdio>
 
@@ -130,4 +130,4 @@ namespace hare {
 int fclose(hare::wrap::FILE &file) { return file.fclose(); }
 int pclose(hare::wrap::PIPE &pipe) { return pipe.pclose(); }
 
-#endif	// HARE_WRAP_STDIO_H
+#endif	// HARE_WRAP_CSTDIO

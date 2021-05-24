@@ -50,6 +50,17 @@ namespace hare {
 			operator int() const { return m_fd; }
 		};
 	}	// namespace wrap
+
+	namespace throws {
+		inline void close(hare::wrap::FD &fd) {
+			if (fd.close() == -1)	// see (1) in hare/throws/unistd.h
+				throw hare::system_error("%s() failed", __func__);
+		}
+	}	// namespace throws
 }	// namespace hare
+
+
+// to avoid accidentally calls
+int close(hare::wrap::FD &fd) { return fd.close(); }
 
 #endif	// HARE_UNISTD_H
