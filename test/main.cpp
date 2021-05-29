@@ -5,13 +5,18 @@
 #include "hare/TestFunctional.h"
 #include "hare/TestNumeric.h"
 #include "hare/TestStrprintf.h"
+#include "hare/throws/TestCstdio.h"
+#include "hare/throws/TestCstdlib.h"
 #include "hare/throws/TestDirent.h"
-#include "hare/throws/TestStdio.h"
-#include "hare/wrap/TestStdio.h"
+#include "hare/wrap/TestCstdio.h"
+#include "hare/wrap/TestDirent.h"
 
 #include <exception>
 #include <cstdio>
 #include <cstdlib>	// EXIT_*
+
+// use this pointers to avoid warning: null argument where non-null required
+char* const CHAR_PTR_NULL = NULL;
 
 int main(const int argc, const char* argv[]) {
 	try {
@@ -22,9 +27,11 @@ int main(const int argc, const char* argv[]) {
 		TestHareFunctional::test();
 		TestHareNumeric::test();
 		TestHareStrprintf::test();
+		TestHareThrowsCstdio::test();
+		TestHareThrowsCstdlib::test();
 		TestHareThrowsDirent::test();
-		TestHareThrowsStdio::test();
-		TestHareWrapStdio::test();
+		TestHareWrapCstdio::test();
+		TestHareWrapDirent::test();
 
 		std::puts("All tests completed successfully");
 		return EXIT_SUCCESS;

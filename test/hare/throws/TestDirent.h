@@ -46,9 +46,19 @@ struct TestHareThrowsDirent {
 		EQUAL_D(NULL, entry);
 	}
 
+	static void test_scandir() {
+		try {
+			struct dirent **namelist = NULL;
+			int n = hare::throws::scandir("/not/existing", &namelist, NULL, NULL);
+		} catch (const std::system_error& ex) {
+			EQUAL_S("scandir(\"/not/existing\") failed: No such file or directory", ex.what());
+		}
+	}
+
 	static void test() {
 		test_closedir();
 		test_opendir();
 		test_readdir();
+		test_scandir();
 	}
 };

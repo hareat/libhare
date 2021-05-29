@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <string>
 
+// use this pointers to avoid warning: null argument where non-null required
+extern char* const CHAR_PTR_NULL;
+
 #define ASSERT(x) if (!(x)) \
 	throw std::runtime_error(hare::strprintf("<%s> failed in %s at line %d", #x, __FILE__, __LINE__));
 #define EQUAL_S(l, r) if (std::string(l) != std::string(r)) \

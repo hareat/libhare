@@ -84,28 +84,32 @@ namespace hare {
 			ScandirNamelist(const ScandirNamelist&) = delete;
 			ScandirNamelist& operator=(const ScandirNamelist&) = delete;
 
-			void free()
-			{
-				if (m_namelist)
-				{
-					if (m_n > 0)
-						for (int i = 0; i < m_n; ++i)
-							::free(m_namelist[i]);
+			void free() {
+				if (m_namelist) {
+					for (int i = 0; i < m_n; ++i)
+						::free(m_namelist[i]);
 					::free(m_namelist);
 					m_namelist = 0;
 				}
 				m_n = 0;
 			}
 
-			/// @see man 3 scandir
-			void scandir(const char *dir,
-				int (*filter)(const struct dirent *),
-				int (*compar)(const struct dirent **, const struct dirent **))
-			{
+			void reset(struct dirent **namelist, int n) {
 				free();
-				m_n = ::scandir(dir, &m_namelist, filter, compar);
+				m_namelist = namelist;
+				m_n = n;
 			}
 
+			int scandir(const char *dir,
+				int (*filter)(const struct dirent *),
+				int (*compar)(const struct dirent **, const struct dirent **)) {
+				free();
+				return (m_n = ::scandir(dir, &m_namelist, filter, compar));
+			}
+
+			// usage: for (struct dirent *entry : namelist) ...
+			// hare::for_each(namelist, [](struct dirent *entry) { ... });
+			// std::for_each(namelist.begin(), namelist.end(), [](struct dirent *entry) { ... });
 			struct dirent** begin() const { return m_namelist; }
 			struct dirent** end()   const { return m_namelist + m_n; }
 

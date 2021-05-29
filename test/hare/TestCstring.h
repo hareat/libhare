@@ -8,18 +8,13 @@ struct TestHareCstring {
 		EQUAL_D( 0, hare::strcmp("a", "a"));
 		EQUAL_D(-1, hare::strcmp("a", "b"));
 		// Segmentation fault: EQUAL_D(1, std::strcmp("", NULL));
-		// use ptr to avoid warning: null argument where non-null required
-		const char *ptr = NULL;
-		EQUAL_D( 0,  std::strcmp(ptr, ptr));
-		EQUAL_D(-1, hare::strcmp(ptr, ""));
-		EQUAL_D( 1, hare::strcmp("", ptr));
-		EQUAL_D( 0, hare::strcmp(ptr, ptr));
+		EQUAL_D(-1, hare::strcmp(CHAR_PTR_NULL, ""));
+		EQUAL_D( 1, hare::strcmp("", CHAR_PTR_NULL));
+		EQUAL_D( 0, hare::strcmp(CHAR_PTR_NULL, CHAR_PTR_NULL));
 	}
 
 	static void test_memchr() {
-		// use ptr to avoid warning: null argument where non-null required
-		const char *ptr = NULL;
-		EQUAL_D(NULL, std::memchr(ptr, 'x', 0));
+		EQUAL_D(NULL, std::memchr(CHAR_PTR_NULL, 'x', 0));
 		// Segmentation fault: EQUAL_D(NULL, std::memchr((void*) 0, 'x', 1));
 	}
 

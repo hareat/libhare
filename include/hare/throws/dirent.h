@@ -69,15 +69,15 @@ namespace hare {
 
 		// returns the number of directory entries selected.
 		// On error, -1 is returned, with errno set to indicate the error.
-		inline int scandir(const char *dirp,
+		inline int scandir(const char *dir,
                    struct dirent ***namelist,
                    int (*filter)(const struct dirent *),
                    int (*compar)(const struct dirent **,
                                  const struct dirent **)) {
-			CHECK_NOT_NULL_ARG1(dirp);
-			int result = ::scandir(dirp, namelist, filter, compar);
+			CHECK_NOT_NULL_ARG1(dir);
+			int result = ::scandir(dir, namelist, filter, compar);
 			if (result == -1)
-				throw hare::system_error("%s() failed", __func__);
+				throw hare::system_error("%s(\"%s\") failed", __func__, dir);
 			return result;
 		}
 

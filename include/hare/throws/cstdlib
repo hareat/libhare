@@ -1,0 +1,118 @@
+#ifndef HARE_THROWS_CSTDLIB
+#define HARE_THROWS_CSTDLIB
+
+#include <cstdlib>
+
+/***************************************************************
+ * Throws an exception in case of any error.
+ *
+ * (1) Other functions return NULL in case of an error and set errno
+ *     to indicate the error.
+ *
+ * (2) returns zero on success, or nonzero if an error occurs.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+#include <hare/stdexcept>	// CHECK_NOT_NULL_ARG
+
+namespace hare {
+	namespace throws {
+		/***************************************************************
+		 * std functions don't like nullptr.
+		 ***************************************************************/
+
+		inline double atof(const char *number) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::atof(number);
+		}
+		inline int atoi(const char *number) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::atoi(number);
+		}
+		inline long atol(const char *number) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::atol(number);
+		}
+		inline long long atoll(const char *number) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::atoll(number);
+		}
+
+		inline char* getenv(const char *key) {
+			CHECK_NOT_NULL_ARG1(key);
+			return std::getenv(key);
+		}
+		inline char* getenv_mandatory(const char *key) {
+			CHECK_NOT_NULL_ARG1(key);
+			char *result = std::getenv(key);
+			CHECK_NOT_NULL_ARG1(result);
+			return result;
+		}
+		void putenv(char *key_value) {
+			CHECK_NOT_NULL_ARG1(key_value);
+			if (::putenv(key_value) != 0)	// see (2)
+				throw hare::system_error("%s(\"%s\") failed", __func__, key_value);
+		}
+		void setenv(const char *key, const char *value, int overwrite) {
+			CHECK_NOT_NULL_ARG2(key, value);
+			if (::setenv(key, value, overwrite) != 0)	// see (2)
+				throw hare::system_error("%s(\"%s\", \"%s\", %d) failed", __func__, key, value, overwrite);
+		}
+		void unsetenv(const char *key) {
+			CHECK_NOT_NULL_ARG1(key);
+			if (::unsetenv(key) != 0)	// see (2)
+				throw hare::system_error("%s(\"%s\") failed", __func__, key);
+		}
+
+		void *calloc(size_t count, size_t size_each) {
+			void *result = std::calloc(count, size_each);
+			if (result == NULL)		// see (1)
+				throw hare::system_error("%s(%uz, %uz) failed", __func__, count, size_each);
+			return result;
+		}
+		void *malloc(size_t size) {
+			void *result = std::malloc(size);
+			if (result == NULL)		// see (1)
+				throw hare::system_error("%s(%uz) failed", __func__, size);
+			return result;
+		}
+		void *realloc(void *ptr, size_t size) {
+			void *result = std::realloc(ptr, size);
+			if (result == NULL)		// see (1)
+				throw hare::system_error("%s(%uz) failed", __func__, size);
+			return result;
+		}
+
+		inline double strtod(const char *number, char **endptr) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::strtod(number, endptr);
+		}
+		inline float strtof(const char *number, char **endptr) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::strtof(number, endptr);
+		}
+		inline long strtol(const char *number, char **endptr, int base) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::strtol(number, endptr, base);
+		}
+		inline long double strtold(const char *number, char **endptr) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::strtold(number, endptr);
+		}
+		inline long long strtoll(const char *number, char **endptr, int base) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::strtoll(number, endptr, base);
+		}
+		inline unsigned long strtoul(const char *number, char **endptr, int base) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::strtoul(number, endptr, base);
+		}
+		inline unsigned long long strtoull(const char *number, char **endptr, int base) {
+			CHECK_NOT_NULL_ARG1(number);
+			return std::strtoull(number, endptr, base);
+		}
+	}	// namespace throws
+}	// namespace hare
+
+#endif	// HARE_THROWS_CSTDLIB

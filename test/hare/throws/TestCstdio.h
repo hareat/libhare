@@ -3,7 +3,7 @@
 #include <hare/throws/cstdio>
 #include <hare/wrap/cstdio>
 
-struct TestHareThrowsStdio {
+struct TestHareThrowsCstdio {
 	static void test_fclose() {
 		try {
 			hare::throws::fclose(NULL);

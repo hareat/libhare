@@ -9,27 +9,27 @@ A very thin and inexpensive layer above common C headers.
     gcc -I$HOME/libhare/include
 
 And in your code use `#include <hare/wrap/stdio.h>` instead of `#include <stdio.h>`
-if you want to use a wrapped FILE*.
+if you want to use a wrapped 'FILE*'.
 
 ### Example
 
-For many example usages see subdirectory test/.
+For many example usages see subdirectory 'test/'.
+
+#### Use of STL without the need of <algorithm>(vi.begin(), vi.end()...
 
     #include <hare/algorithm>
     #include <hare/numeric>
     const std::vector<int> vi = {1, 2, 3};
-    // use of STL without the need of <algorithm>(vi.begin(), vi.end()...
     std::cout << hare::any_of(vi, 2));      // prints "1" meaning "true"
     std::cout << hare::accumulate(vi, 0));  // prints "6"
 
-
+#### hare::FILE autmatically closes an open file pointer
 
     #include <hare/throws/stdio.h>
     #include <hare/wrap/stdio.h>
-    // hare::FILE autmatically closes an open file pointer
     const hare::FILE fp(hare::throws::fopen(<your path>, "w"));
     hare::throws::fputs(data, fp);  // throws in case of an error
-    fputs(data, fp);  // if you do not care about a successful write
+    std::fputs(data, fp);  // if you do not care about a successful write
 
 ### Usage Arduino IDE
 

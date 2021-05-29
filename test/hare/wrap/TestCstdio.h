@@ -4,7 +4,7 @@
 #include <hare/throws/cstdio>
 #include <hare/wrap/cstdio>
 
-struct TestHareWrapStdio {
+struct TestHareWrapCstdio {
 	static void test_FILE() {
 		hare::wrap::FILE emptyfp;
 		ASSERT(emptyfp == NULL);
