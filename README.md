@@ -15,7 +15,7 @@ if you want to use a wrapped 'FILE*'.
 
 For many example usages see subdirectory 'test/'.
 
-#### Use of STL without the need of <algorithm>(vi.begin(), vi.end()...
+#### Use of STL without the need of algorithm(container.begin(), container.end()...
 
     #include <hare/algorithm>
     #include <hare/numeric>
@@ -48,5 +48,5 @@ Once I have just found out this hack without the reason why.
 
 [Wikipedia about indentation style](https://en.wikipedia.org/wiki/Indentation_style)
 
-I have decided using 1TBS because the code is be very simple and therefore
+I have decided using 1TBS because the code is very simple and therefore
 structuring empty lines are not so necessary.
