@@ -9,6 +9,7 @@
 #include "hare/throws/TestCstdio.h"
 #include "hare/throws/TestCstdlib.h"
 #include "hare/throws/TestDirent.h"
+#include "hare/throws/TestStat.h"
 #include "hare/wrap/TestCstdio.h"
 #include "hare/wrap/TestDirent.h"
 
@@ -32,6 +33,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareThrowsCstdio::test();
 		TestHareThrowsCstdlib::test();
 		TestHareThrowsDirent::test();
+		TestHareThrowsStat::test();
 		TestHareWrapCstdio::test();
 		TestHareWrapDirent::test();
 

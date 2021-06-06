@@ -38,9 +38,24 @@ namespace hare {
 		}
 		inline void chgrp(const std::string& path, gid_t group) { chgrp(path.c_str(), group); }
 
+		inline void fchown(int fd, uid_t owner, gid_t group) {
+			if (::fchown(fd, owner, group) == -1)	// see (1)
+				throw hare::system_error("%s(%d, %d, %d) failed", __func__, fd, owner, group);
+		}
+
+		inline void fchown(int fd, uid_t owner) {
+			if (::fchown(fd, owner, -1) == -1)	// see (1)
+				throw hare::system_error("%s(%d, %d) failed", __func__, fd, owner);
+		}
+
+		inline void fchgrp(int fd, gid_t group) {
+			if (::fchown(fd, -1, group) == -1)	// see (1)
+				throw hare::system_error("%s(%d, %d) failed", __func__, fd, group);
+		}
+
 		inline void close(int fd) {
 			if (::close(fd) == -1)	// see (1)
-				throw hare::system_error("%s() failed", __func__);
+				throw hare::system_error("%s(%d) failed", __func__, fd);
 		}
 	}	// namespace throws
 }	// namespace hare

@@ -25,6 +25,12 @@ namespace hare {
 		template<typename ... Args>
 		system_error(const char *format, Args ... args)
 			: std::system_error(errno, std::system_category(), strprintf<256>(format, args ...)) {}
+
+		// shortcuts
+		// errno would be nice but I have found no way to do it
+		int errorno() const { return code().value(); }
+		int value() const { return code().value(); }
+		std::string message() const { return code().message(); }
 	};
 }	// namespace hare
 

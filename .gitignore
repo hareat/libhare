@@ -1,4 +1,6 @@
-# All files in any directories named tmp
+# All directories named tmp or secret
 tmp/
+secret/
 
+# The test binary
 test/test
