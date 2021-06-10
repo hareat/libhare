@@ -23,7 +23,7 @@ namespace hare {
       case ESP_BLUEDROID_STATUS_ENABLED:
         return "ESP_BLUEDROID_STATUS_ENABLED";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 

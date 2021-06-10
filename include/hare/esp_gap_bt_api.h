@@ -29,7 +29,7 @@ namespace hare {
       case ESP_BT_INIT_COD:
         return "ESP_BT_INIT_COD";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -40,7 +40,7 @@ namespace hare {
       case ESP_BT_CONNECTABLE:
         return "ESP_BT_CONNECTABLE";
       default:
-        return "unkown";
+        return "unknown";
     }
   }*/
 
@@ -53,7 +53,7 @@ namespace hare {
       case ESP_BT_GENERAL_DISCOVERABLE:
         return "ESP_BT_GENERAL_DISCOVERABLE";
       default:
-        return "unkown";
+        return "unknown";
     }
   }*/
 
@@ -68,7 +68,7 @@ namespace hare {
       case ESP_BT_GAP_DEV_PROP_EIR:
         return "ESP_BT_GAP_DEV_PROP_EIR";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -106,7 +106,7 @@ namespace hare {
       case ESP_BT_PIN_TYPE_FIXED:
         return "ESP_BT_PIN_TYPE_FIXED";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -115,7 +115,7 @@ namespace hare {
       case ESP_BT_SP_IOCAP_MODE:
         return "ESP_BT_SP_IOCAP_MODE";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -144,7 +144,7 @@ namespace hare {
       case ESP_BT_COD_MAJOR_DEV_UNCATEGORIZED:
         return "ESP_BT_COD_MAJOR_DEV_UNCATEGORIZED";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -155,7 +155,7 @@ namespace hare {
       case ESP_BT_GAP_DISCOVERY_STARTED:
         return "ESP_BT_GAP_DISCOVERY_STARTED";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -196,7 +196,7 @@ namespace hare {
       case ESP_BT_GAP_EVT_MAX:
         return "ESP_BT_GAP_EVT_MAX";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -207,7 +207,7 @@ namespace hare {
       case ESP_BT_INQ_MODE_LIMITED_INQUIRY:
         return "ESP_BT_INQ_MODE_LIMITED_INQUIRY";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 }  // namespache hare

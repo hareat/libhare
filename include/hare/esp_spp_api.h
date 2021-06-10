@@ -35,7 +35,7 @@ namespace hare {
       case ESP_SPP_NO_SERVER:
         return "ESP_SPP_NO_SERVER";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -46,7 +46,7 @@ namespace hare {
       case ESP_SPP_ROLE_SLAVE:
         return "ESP_SPP_ROLE_SLAVE";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -57,7 +57,7 @@ namespace hare {
       case ESP_SPP_MODE_VFS:
         return "ESP_SPP_MODE_VFS";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -88,7 +88,7 @@ namespace hare {
       case ESP_SPP_SRV_STOP_EVT:
         return "ESP_SPP_SRV_STOP_EVT";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 }  // namespache hare

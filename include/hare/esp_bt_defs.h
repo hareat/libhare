@@ -64,7 +64,7 @@ namespace hare {
       //case ESP_BT_STATUS_EIR_TOO_LARGE:
       //  return "ESP_BT_STATUS_EIR_TOO_LARGE";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -77,7 +77,7 @@ namespace hare {
       case ESP_BT_DEVICE_TYPE_DUMO:
         return "ESP_BT_DEVICE_TYPE_DUMO";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -92,7 +92,7 @@ namespace hare {
       case BLE_ADDR_TYPE_RPA_RANDOM:
         return "BLE_ADDR_TYPE_RPA_RANDOM";
       default:
-        return "unkown";
+        return "unknown";
     }
   }
 
@@ -103,7 +103,7 @@ namespace hare {
       case BLE_WL_ADDR_TYPE_RANDOM:
         return "BLE_WL_ADDR_TYPE_RANDOM";
       default:
-        return "unkown";
+        return "unknown";
     }
   }*/
 
