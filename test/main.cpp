@@ -5,6 +5,7 @@
 #include "hare/TestFunctional.h"
 #include "hare/TestLeakyBucket.h"
 #include "hare/TestNumeric.h"
+#include "hare/TestSignal.h"
 #include "hare/TestStrprintf.h"
 #include "hare/throws/TestCstdio.h"
 #include "hare/throws/TestCstdlib.h"
@@ -29,6 +30,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareFunctional::test();
 		TestHareLeakyBucket::test();
 		TestHareNumeric::test();
+		TestHareSignal::test();
 		TestHareStrprintf::test();
 		TestHareThrowsCstdio::test();
 		TestHareThrowsCstdlib::test();

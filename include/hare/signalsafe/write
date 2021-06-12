@@ -1,0 +1,30 @@
+#ifndef HARE_SIGNALSAFE_WRITE
+#define HARE_SIGNALSAFE_WRITE
+
+/***************************************************************
+ * hare/signalsafe/write async-signal-safe functions for writing
+ * a complete string.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+#include <hare/signalsafe/cstring>
+#include <hare/signalsafe/unistd.h>
+
+#include <string>
+
+namespace hare {
+	namespace signalsafe {
+		inline ssize_t write(int fd, const char *msg) {
+			if (msg && *msg)
+				return hare::signalsafe::write(fd, msg, hare::signalsafe::strlen(msg));
+			else
+				return 0;
+		}
+		inline int write(int fd, const std::string& msg) {
+			return hare::signalsafe::write(fd, msg.c_str(), msg.length());
+		}
+	}	// namespace signalsafe
+}	// namespace hare
+
+#endif	// HARE_SIGNALSAFE_WRITE

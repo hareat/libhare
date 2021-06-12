@@ -1,0 +1,41 @@
+#ifndef HARE_SIGNALSAFE_CSTRING
+#define HARE_SIGNALSAFE_CSTRING
+
+#include <cstring>
+
+/***************************************************************
+ * hare/signalsafe/cstring async-signal-safe functions of cstring.
+ * Only functions of the list in man signal-safety are allowed.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	namespace signalsafe {
+		using ::memccpy;
+		using std::memchr;
+		using std::memcmp;
+		using std::memcpy;
+		using std::memmove;
+		using std::memset;
+		using ::stpcpy;
+		using ::stpncpy;
+		using std::strcat;
+		using std::strchr;
+		using std::strcmp;
+		using std::strcpy;
+		using std::strcspn;
+		using std::strlen;
+		using std::strncat;
+		using std::strncmp;
+		using std::strncpy;
+		using ::strnlen;
+		using std::strpbrk;
+		using std::strrchr;
+		using std::strspn;
+		using std::strstr;
+		using ::strtok_r;
+	}	// namespace signalsafe
+}	// namespace hare
+
+#endif	// HARE_SIGNALSAFE_CSTRING

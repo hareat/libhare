@@ -1,0 +1,98 @@
+#ifndef HARE_SIGNALSAFE_WRITEF
+#define HARE_SIGNALSAFE_WRITEF
+
+/***************************************************************
+ * hare/signalsafe/writef async-signal-safe functions for writing
+ * a printf formatted string.
+ * Necessary because in a singal hander we can not use *printf.
+ * Very very limited implementation, just do %c, %d, %o, %x and %s,
+ * espacially %f should be avoided.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+#include <hare/signalsafe/write>
+
+#include <stdarg.h>	// va_*()
+
+namespace hare {
+	namespace signalsafe {
+		// filles from the tail and returns the address of the starting
+		// position of the integer as string.
+		inline char* itoa(int i, char *buf, size_t size, const int base) {
+			if (!buf || !size)
+				return buf;
+			buf[--size] = '\0';
+			while (size) {
+				const int n = i % base;
+				char ch = '\0';
+				if (n < 10)
+					ch = n + '0';
+				else
+					ch = n + 'a';
+				buf[--size] = ch;
+
+				i /= base;
+				if (i == 0)
+					break;
+			}
+			return buf + size;
+		}
+		template<size_t size>
+		char* itoa(int n, char (&ach)[size], const int base) {
+			return itoa(n, ach, size, base);
+		}
+
+		inline ssize_t writef(int fd, const char *format, ...) {
+			if (!format || *format == '\0')
+				return 0;
+
+			va_list ap;
+			va_start(ap, format);
+			ssize_t result = 0;
+
+			const char *start = format, *end = format;
+			while (*end) {
+				if (*end == '%') {
+					// print the processed characters
+					hare::signalsafe::write(fd, start, end - start);
+					start = ++end;	// skip %
+					switch (*end) {
+						case 'c': {
+							const char ch = va_arg(ap, int);
+							hare::signalsafe::write(fd, &ch, 1);
+							start = ++end;	// skip c
+							break;
+						}
+						case 'd':
+						case 'o':
+						case 'x': {
+							char buffer[55] = "";
+							hare::signalsafe::write(fd, itoa(va_arg(ap, int), buffer,
+								(*end == 'd') ? 10 : ((*end == 'x') ? 16 : 8)));	// base
+							start = ++end;	// skip d, o or x
+							break;
+						}
+						case 's':
+							hare::signalsafe::write(fd, va_arg(ap, char *));
+							start = ++end;	// skip s
+							break;
+
+						case '%':
+							// start stays the same and therefore the % char
+							// will be printed by the next opportunity
+							break;
+					}
+				}
+				++end;
+			}
+			// print the remaining processed characters
+			hare::signalsafe::write(fd, start, end - start);
+
+			va_end(ap);
+			return result;
+		}
+	}	// namespace signalsafe
+}	// namespace hare
+
+#endif	// HARE_SIGNALSAFE_WRITEF

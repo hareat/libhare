@@ -11,8 +11,7 @@
 
 namespace hare {
 	inline const char* errno_to_sz(const int errorno) {
-		switch (errorno)
-		{
+		switch (errorno) {
 			case EPERM:
 				return "EPERM";
 			case ENOENT:
@@ -28,7 +27,7 @@ namespace hare {
 			case E2BIG:
 				return "E2BIG";
 			case ENOEXEC:
-				return ENOEXEC"";
+				return "ENOEXEC";
 			case EBADF:
 				return "EBADF";
 			case ECHILD:

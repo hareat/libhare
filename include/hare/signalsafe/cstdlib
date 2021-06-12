@@ -1,0 +1,20 @@
+#ifndef HARE_SIGNALSAFE_CSTDLIB
+#define HARE_SIGNALSAFE_CSTDLIB
+
+#include <cstdlib>
+
+/***************************************************************
+ * hare/signalsafe/cstdlib async-signal-safe functions of cstdlib.
+ * Only functions of the list in man signal-safety are allowed.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	namespace signalsafe {
+		using std::abort;
+		using std::_Exit;
+	}	// namespace signalsafe
+}	// namespace hare
+
+#endif	// HARE_SIGNALSAFE_CSTDLIB

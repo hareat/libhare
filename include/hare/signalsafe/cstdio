@@ -1,0 +1,20 @@
+#ifndef HARE_SIGNALSAFE_CSTDIO
+#define HARE_SIGNALSAFE_CSTDIO
+
+#include <cstdio>
+
+/***************************************************************
+ * hare/signalsafe/cstdio async-signal-safe functions of cstdio.
+ * Only functions of the list in man signal-safety are allowed.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	namespace signalsafe {
+		using std::rename;
+		using std::renameat;
+	}	// namespace signalsafe
+}	// namespace hare
+
+#endif	// HARE_SIGNALSAFE_CSTDIO

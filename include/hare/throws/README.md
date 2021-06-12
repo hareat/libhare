@@ -3,7 +3,7 @@
 Instead of cluttering code with error processing these functions throw an
 exception to centralize the error processing.
 
-If the return value of the original function is on necessary to indicate an
+If the return value of the original function is only necessary to indicate an
 error the wrapper function does not return anything.
 
 Example

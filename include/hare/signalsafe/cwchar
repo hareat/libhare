@@ -1,0 +1,40 @@
+#ifndef HARE_SIGNALSAFE_CWCHAR
+#define HARE_SIGNALSAFE_CWCHAR
+
+#include <cwchar>
+
+/***************************************************************
+ * hare/signalsafe/cwchar async-signal-safe functions of cwchar.
+ * Only functions of the list in man signal-safety are allowed.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	namespace signalsafe {
+		using std::wcpcpy;
+		using std::wcpncpy;
+		using std::wcscat;
+		using std::wcschr;
+		using std::wcscmp;
+		using std::wcscpy;
+		using std::wcscspn;
+		using std::wcslen;
+		using std::wcsncat;
+		using std::wcsncmp;
+		using std::wcsncpy;
+		using std::wcsnlen;
+		using std::wcspbrk;
+		using std::wcsrchr;
+		using std::wcsspn;
+		using std::wcsstr;
+		using std::wcstok;
+		using std::wmemchr;
+		using std::wmemcmp;
+		using std::wmemcpy;
+		using std::wmemmove;
+		using std::wmemset;
+	}	// namespace signalsafe
+}	// namespace hare
+
+#endif	// HARE_SIGNALSAFE_CWCHAR
