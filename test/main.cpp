@@ -41,6 +41,11 @@ int main(const int argc, const char* argv[]) {
 
 		std::puts("All tests completed successfully");
 		return EXIT_SUCCESS;
+	} catch (const hare::system_error& ex) {
+		std::fprintf(stderr, "%s() caught: %s\n", __func__, ex.what());
+		std::fflush(stderr);
+		ex.backtrace_write(2);
+		return EXIT_FAILURE;
 	} catch (const std::exception& ex) {
 		std::fprintf(stderr, "%s() caught: %s\n", __func__, ex.what());
 		return EXIT_FAILURE;
