@@ -57,6 +57,6 @@ namespace hare {
 		// configTime(gmtOffset, daylightOffset, "192.168.0.1", "at.pool.ntp.org");
 		configTime(gmtOffset, daylightOffset, "at.pool.ntp.org");
 	}
-}	// namespache hare
+}	// namespace hare
 
 #endif	// HARE_WIFI_H

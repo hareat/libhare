@@ -18,25 +18,54 @@
 namespace hare {
 	namespace signalsafe {
 		// filles from the tail and returns the address of the starting
-		// position of the integer as string.
-		inline char* itoa(int i, char *buf, size_t size, const int base) {
+		// position of the unsigned integer as string.
+		inline char* uitoa(unsigned int n, char *buf, size_t size, const int base) {
 			if (!buf || !size)
 				return buf;
 			buf[--size] = '\0';
+			if (base < 2 || 36 < base)
+				return buf;
 			while (size) {
-				const int n = i % base;
+				const unsigned int digit = n % base;
 				char ch = '\0';
-				if (n < 10)
-					ch = n + '0';
+				if (digit < 10)
+					ch = digit + '0';
 				else
-					ch = n + 'a';
+					ch = digit - 10 + 'A';
 				buf[--size] = ch;
 
-				i /= base;
-				if (i == 0)
-					break;
+				n /= base;
+				if (n == 0)
+					return buf + size;
 			}
-			return buf + size;
+			// error: buffer is not big enough
+			buf[0] = '\0';
+			return buf;
+		}
+		template<size_t size>
+		char* uitoa(unsigned int n, char (&ach)[size], const int base) {
+			return uitoa(n, ach, size, base);
+		}
+
+		// filles from the tail and returns the address of the starting
+		// position of the integer as string.
+		inline char* itoa(int n, char *buf, size_t size, const int base) {
+			if (n >= 0) {
+				return uitoa(n, buf, size, base);
+			} else {
+				char *result = uitoa(-n, buf, size, base);
+				if (result != buf) {
+					--result;
+					*result = '-';
+					return result;
+				} else if (!buf || !size) {
+					return buf;
+				} else {
+					// error: buffer is not big enough
+					buf[0] = '\0';
+					return buf;
+				}
+			}
 		}
 		template<size_t size>
 		char* itoa(int n, char (&ach)[size], const int base) {
@@ -61,7 +90,7 @@ namespace hare {
 						case 'c': {
 							const char ch = va_arg(ap, int);
 							hare::signalsafe::write(fd, &ch, 1);
-							start = ++end;	// skip c
+							start = ++end;	// skip 'c'
 							break;
 						}
 						case 'd':
@@ -70,17 +99,17 @@ namespace hare {
 							char buffer[55] = "";
 							hare::signalsafe::write(fd, itoa(va_arg(ap, int), buffer,
 								(*end == 'd') ? 10 : ((*end == 'x') ? 16 : 8)));	// base
-							start = ++end;	// skip d, o or x
+							start = ++end;	// skip 'd', 'o' or 'x'
 							break;
 						}
 						case 's':
 							hare::signalsafe::write(fd, va_arg(ap, char *));
-							start = ++end;	// skip s
+							start = ++end;	// skip 's'
 							break;
 
 						case '%':
 							// start stays the same and therefore the % char
-							// will be printed by the next opportunity
+							// will be printed at the next opportunity
 							break;
 					}
 				}

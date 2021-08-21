@@ -19,6 +19,18 @@ static void my_signal_handler(int signum) {
 
 
 struct TestHareSignal {
+	static void test_itoa() {
+		char ach[5] = "";
+		EQUAL_S( "123", sigsaf::itoa(  123, ach, 10));
+		EQUAL_S( "ABC", sigsaf::itoa(0xABC, ach, 16));
+		EQUAL_S("1234", sigsaf::itoa(01234, ach,  8));
+		EQUAL_S( "111", sigsaf::itoa(    7, ach,  2));
+		EQUAL_S("-123", sigsaf::itoa( -123, ach, 10));
+		// buffer will be not big enough for the following
+		EQUAL_S(    "", sigsaf::itoa(12345, ach, 10));
+		EQUAL_S(    "", sigsaf::itoa(-1234, ach, 10));
+	}
+
 	static void test_signal() {
 		hare::sighandler_restorer srUsr1(SIGUSR1, hare::throws::signal(SIGUSR1, my_signal_handler));
 		hare::sighandler_restorer srUsr2(SIGUSR2, hare::throws::signal(SIGUSR2, my_signal_handler));
@@ -31,6 +43,7 @@ struct TestHareSignal {
 	}
 
 	static void test() {
+		test_itoa();
 		test_signal();
 	}
 };

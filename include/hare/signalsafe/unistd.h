@@ -24,7 +24,6 @@ namespace hare {
 		using ::execv;
 		using ::execve;
 		using ::_exit;
-		using ::_Exit;
 		using ::faccessat;
 		using ::fchdir;
 		using ::fchown;

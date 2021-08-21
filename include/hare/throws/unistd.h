@@ -9,6 +9,9 @@
  * (1) Many functions return 0 on sucess and return -1 in case of an error
  *     and set errno to indicate the error.
  *
+ * (2) The exec functions family does only return in case of an error, the
+ *     return value is -1 and set errno to indicate the error.
+ *
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************************/
 
@@ -56,6 +59,34 @@ namespace hare {
 		inline void close(int fd) {
 			if (::close(fd) == -1)	// see (1)
 				throw hare::system_error("%s(%d) failed", __func__, fd);
+		}
+
+		inline int execv(const char* path, char *const argv[]) {
+			int result = ::execv(path, argv);
+			if (result == -1)	// see (2)
+				throw hare::system_error("%s(%s) failed", __func__, path);
+			retunr result;
+		}
+
+		inline int execvp(const char* file, char *const argv[]) {
+			int result = ::execvp(file, argv);
+			if (result == -1)	// see (2)
+				throw hare::system_error("%s(%s) failed", __func__, file);
+			retunr result;
+		}
+
+		inline int execvpe(const char* file, char *const argv[], char *const envp[]) {
+			int result = ::execvpe(file, argv, envp);
+			if (result == -1)	// see (2)
+				throw hare::system_error("%s(%s) failed", __func__, file);
+			retunr result;
+		}
+
+		inline pid_t fork() {
+			pid_t result = ::fork();
+			if (result == -1)	// -1 on error, 0 in child, else is child pid in parent
+				throw hare::system_error("%s() failed", __func__);
+			retunr result;
 		}
 	}	// namespace throws
 }	// namespace hare

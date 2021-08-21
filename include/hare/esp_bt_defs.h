@@ -13,7 +13,8 @@
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************/
 
-#include <stdio.h>	// snprintf sscanf
+#include <hare/mac_sz.h>
+
 #include <string.h>	// memcmp
 
 namespace hare {
@@ -107,20 +108,19 @@ namespace hare {
     }
   }*/
 
+
   inline const char* to_sz(esp_bd_addr_t bda, char *ach, size_t size) {
-    snprintf(ach, size, ESP_BD_ADDR_STR, ESP_BD_ADDR_HEX(bda));
-    return ach;
+    return mac_to_sz(bda, ach, size);
   }
 
   template<size_t size>
   const char* to_sz(esp_bd_addr_t bda, char (&ach)[size]) {
-    return to_sz(bda, ach, size);
+    return mac_to_sz(bda, ach, size);
   }
 
   // take care, this uses a static buffer
   inline const char* to_sz(esp_bd_addr_t bda) {
-    static char ach[ESP_BD_ADDR_LEN * 3];
-    return to_sz(bda, ach);
+    return mac_to_sz(bda);
   }
 
 
@@ -132,6 +132,6 @@ namespace hare {
   inline bool equals(esp_bd_addr_t left, esp_bd_addr_t right) {
     return left == right || memcmp(left, right, ESP_BD_ADDR_LEN) == 0;
   }
-}  // namespache hare
+}  // namespace hare
 
 #endif  // HARE_ESP_BT_DEFS_H	

@@ -33,6 +33,6 @@ namespace hare {
     ESP_ERROR_CHECK(esp_bluedroid_init());
 	ESP_ERROR_CHECK(esp_bluedroid_enable());
   }
-}	// namespache hare
+}	// namespace hare
 
 #endif	// HARE_ESP_BT_MAIN_H

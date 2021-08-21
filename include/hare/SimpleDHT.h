@@ -60,6 +60,6 @@ namespace hare {
     static char achError[44];
     return getDhtErrorMsg(iError, achError);
   }
-}	// namespache hare
+}	// namespace hare
 
 #endif	// HARE_SIMPLE_DHT_H

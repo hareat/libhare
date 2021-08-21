@@ -210,6 +210,6 @@ namespace hare {
         return "unknown";
     }
   }
-}  // namespache hare
+}  // namespace hare
 
 #endif  // HARE_ESP_GAP_BT_API_H

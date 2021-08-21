@@ -32,8 +32,8 @@ namespace hare {
         return "ESP_SPP_NEED_DEINIT";
       case ESP_SPP_NO_CONNECTION:
         return "ESP_SPP_NO_CONNECTION";
-      case ESP_SPP_NO_SERVER:
-        return "ESP_SPP_NO_SERVER";
+      //case ESP_SPP_NO_SERVER:
+      //  return "ESP_SPP_NO_SERVER";
       default:
         return "unknown";
     }
@@ -42,7 +42,7 @@ namespace hare {
   inline const char* to_sz(const esp_spp_role_t role) {
     switch (role) {
       case ESP_SPP_ROLE_MASTER:
-        return "ESP_SPP_ROLE_MASTER";
+        return "ESP_ 	SPP_ROLE_MASTER";
       case ESP_SPP_ROLE_SLAVE:
         return "ESP_SPP_ROLE_SLAVE";
       default:
@@ -91,6 +91,6 @@ namespace hare {
         return "unknown";
     }
   }
-}  // namespache hare
+}  // namespace hare
 
 #endif  // HARE_ESP_SPP_API_H
