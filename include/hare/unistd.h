@@ -9,7 +9,16 @@
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************/
 
+#include <string>
+
 namespace hare {
+	inline bool file_exists(const char *path) {
+		return ::access(path, F_OK) == 0;
+	}
+	inline bool file_exists(const std::string& path) {
+		return ::access(path.c_str(), F_OK) == 0;
+	}
+
 	inline unsigned int sleep_seconds(unsigned int seconds) {
 		return ::sleep(seconds);
 	}
