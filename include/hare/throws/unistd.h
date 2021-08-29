@@ -62,28 +62,28 @@ namespace hare {
 		}
 
 		inline int execv(const char* path, char *const argv[]) {
-			int result = ::execv(path, argv);
+			int const result = ::execv(path, argv);
 			if (result == -1)	// see (2)
 				throw hare::system_error("%s(%s) failed", __func__, path);
 			retunr result;
 		}
 
 		inline int execvp(const char* file, char *const argv[]) {
-			int result = ::execvp(file, argv);
+			int const result = ::execvp(file, argv);
 			if (result == -1)	// see (2)
 				throw hare::system_error("%s(%s) failed", __func__, file);
 			retunr result;
 		}
 
 		inline int execvpe(const char* file, char *const argv[], char *const envp[]) {
-			int result = ::execvpe(file, argv, envp);
+			int const result = ::execvpe(file, argv, envp);
 			if (result == -1)	// see (2)
 				throw hare::system_error("%s(%s) failed", __func__, file);
 			retunr result;
 		}
 
 		inline pid_t fork() {
-			pid_t result = ::fork();
+			pid_t const result = ::fork();
 			if (result == -1)	// -1 on error, 0 in child, else is child pid in parent
 				throw hare::system_error("%s() failed", __func__);
 			retunr result;

@@ -45,7 +45,7 @@ namespace hare {
 		}
 		inline char* getenv_mandatory(const char *key) {
 			CHECK_NOT_NULL_ARG1(key);
-			char *result = std::getenv(key);
+			char * const result = std::getenv(key);
 			CHECK_NOT_NULL_ARG1(result);
 			return result;
 		}
@@ -66,19 +66,19 @@ namespace hare {
 		}
 
 		void *calloc(size_t count, size_t size_each) {
-			void *result = std::calloc(count, size_each);
+			void * const result = std::calloc(count, size_each);
 			if (result == NULL)		// see (1)
 				throw hare::system_error("%s(%uz, %uz) failed", __func__, count, size_each);
 			return result;
 		}
 		void *malloc(size_t size) {
-			void *result = std::malloc(size);
+			void * const result = std::malloc(size);
 			if (result == NULL)		// see (1)
 				throw hare::system_error("%s(%uz) failed", __func__, size);
 			return result;
 		}
 		void *realloc(void *ptr, size_t size) {
-			void *result = std::realloc(ptr, size);
+			void * const result = std::realloc(ptr, size);
 			if (result == NULL)		// see (1)
 				throw hare::system_error("%s(%uz) failed", __func__, size);
 			return result;

@@ -36,7 +36,7 @@ namespace hare {
 
 		inline FILE* fdopen(int fd, const char *mode) {
 			CHECK_NOT_NULL_ARG1(mode);
-			FILE *result = ::fdopen(fd, mode);
+			FILE * const result = ::fdopen(fd, mode);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(%d, \"%s\") failed", __func__, fd, mode);
 			return result;
@@ -50,7 +50,7 @@ namespace hare {
 
 		inline int fgetc(FILE *stream) {
 			CHECK_NOT_NULL_ARG1(stream);
-			int result = std::fgetc(stream);
+			int const result = std::fgetc(stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -64,7 +64,7 @@ namespace hare {
 		
 		inline char* fgets(char *buffer, int size, FILE *stream) {
 			CHECK_NOT_NULL_ARG2(buffer, stream);
-			char *result = std::fgets(buffer, size, stream);
+			char * const result = std::fgets(buffer, size, stream);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(%d) failed", __func__, size);
 			return result;
@@ -72,7 +72,7 @@ namespace hare {
 
 		inline int fileno(FILE *stream) {
 			CHECK_NOT_NULL_ARG1(stream);
-			int result = ::fileno(stream);
+			int const result = ::fileno(stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -80,7 +80,7 @@ namespace hare {
 
 		inline FILE* fmemopen(void *buffer, size_t size, const char *mode) {
 			CHECK_NOT_NULL_ARG2(buffer, mode);
-			FILE *result = ::fmemopen(buffer, size, mode);
+			FILE * const result = ::fmemopen(buffer, size, mode);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(%zu, \"%s\") failed", __func__, size, mode);
 			return result;
@@ -88,7 +88,7 @@ namespace hare {
 
 		inline FILE* fopen(const char *path, const char *mode) {
 			CHECK_NOT_NULL_ARG2(path, mode);
-			FILE *result = std::fopen(path, mode);
+			FILE * const result = std::fopen(path, mode);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(\"%s\", \"%s\") failed", __func__, path, mode);
 			return result;
@@ -99,7 +99,7 @@ namespace hare {
 
 		inline int fputc(int ch, FILE *stream) {
 			CHECK_NOT_NULL_ARG1(stream);
-			int result = std::fputc(ch, stream);
+			int const result = std::fputc(ch, stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s(*) failed", __func__);
 			return result;
@@ -113,7 +113,7 @@ namespace hare {
 
 		inline size_t fread(void *buffer, size_t size, size_t n, FILE *stream) {
 			CHECK_NOT_NULL_ARG2(buffer, stream);
-			size_t result = std::fread(buffer, size, n, stream);
+			size_t const result = std::fread(buffer, size, n, stream);
 			if (result != (size * n) && ferror(stream))	// see (3)
 				throw hare::system_error("%s(%zu, %zu) failed", __func__, size, n);
 			return result;
@@ -121,7 +121,7 @@ namespace hare {
 
 		inline FILE* freopen(const char *path, const char *mode, FILE *stream) {
 			CHECK_NOT_NULL_ARG3(path, mode, stream);
-			FILE *result = std::freopen(path, mode, stream);
+			FILE * const result = std::freopen(path, mode, stream);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(\"%s\", \"%s\") failed", __func__, path, mode);
 			return result;
@@ -132,7 +132,7 @@ namespace hare {
 
 		inline size_t fwrite(void *data, size_t size, size_t n, FILE *stream) {
 			CHECK_NOT_NULL_ARG2(data, stream);
-			size_t result = std::fwrite(data, size, n, stream);
+			size_t const result = std::fwrite(data, size, n, stream);
 			if (result != (size * n) && ferror(stream))	// see (3)
 				throw hare::system_error("%s(%zu, %zu) failed", __func__, size, n);
 			return result;
@@ -140,14 +140,14 @@ namespace hare {
 
 		inline int getc(FILE *stream) {
 			CHECK_NOT_NULL_ARG1(stream);
-			int result = std::getc(stream);
+			int const result = std::getc(stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
 		}
 
 		inline int getchar() {
-			int result = std::getchar();
+			int const result = std::getchar();
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -155,7 +155,7 @@ namespace hare {
 
 		inline ssize_t getdelim(char **lineptr, size_t *n, int delim, FILE *stream) {
 			CHECK_NOT_NULL_ARG3(lineptr, n, stream);
-			ssize_t result = ::getdelim(lineptr, n, delim, stream);
+			ssize_t const result = ::getdelim(lineptr, n, delim, stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s(0x%X) failed", __func__, delim);
 			return result;
@@ -163,7 +163,7 @@ namespace hare {
 
 		inline ssize_t getline(char **lineptr, size_t *n, FILE *stream) {
 			CHECK_NOT_NULL_ARG3(lineptr, n, stream);
-			ssize_t result = ::getline(lineptr, n, stream);
+			ssize_t const result = ::getline(lineptr, n, stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -171,7 +171,7 @@ namespace hare {
 
 		inline FILE* open_memstream(char **bufp, size_t *sizep) {
 			CHECK_NOT_NULL_ARG2(bufp, sizep);
-			FILE *result = ::open_memstream(bufp, sizep);
+			FILE * const result = ::open_memstream(bufp, sizep);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -185,7 +185,7 @@ namespace hare {
 
 		inline FILE* popen(const char *command, const char *mode) {
 			CHECK_NOT_NULL_ARG2(command, mode);
-			FILE *result = ::popen(command, mode);
+			FILE * const result = ::popen(command, mode);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(\"%s\", \"%s\") failed", __func__, command, mode);
 			return result;
@@ -196,14 +196,14 @@ namespace hare {
 
 		inline int putc(int c, FILE *stream) {
 			CHECK_NOT_NULL_ARG1(stream);
-			int result = std::putc(c, stream);
+			int const result = std::putc(c, stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s(*) failed", __func__);
 			return result;
 		}
 
 		inline int putchar(int c) {
-			int result = std::putchar(c);
+			int const result = std::putchar(c);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s(*) failed", __func__);
 			return result;
@@ -240,7 +240,7 @@ namespace hare {
 		}
 
 		inline char* tempnam(const char *dir, const char *prefix) {
-			char *result = ::tempnam(dir, prefix);
+			char * const result = ::tempnam(dir, prefix);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(\"%s\", \"%s\") failed", __func__, dir, prefix);
 			return result;
@@ -256,14 +256,14 @@ namespace hare {
 		}
 		
 		inline FILE* tmpfile() {
-			FILE *result = std::tmpfile();
+			FILE * const result = std::tmpfile();
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
 		}
 
 		inline char* tmpnam(char *buffer) {
-			char *result = std::tmpnam(buffer);
+			char * const result = std::tmpnam(buffer);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -271,7 +271,7 @@ namespace hare {
 
 		inline int ungetc(int c, FILE *stream) {
 			CHECK_NOT_NULL_ARG1(stream);
-			int result = std::ungetc(c, stream);
+			int const result = std::ungetc(c, stream);
 			if (result == EOF)		// see (1)
 				throw hare::system_error("%s(*) failed", __func__);
 			return result;

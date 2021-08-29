@@ -1,7 +1,10 @@
 #include "test.h"
 
+#include <hare/algorithm>	// sort
 #include <hare/throws/dirent.h>
 #include <hare/wrap/dirent.h>
+
+#include <vector>
 
 struct TestHareThrowsDirent {
 	static void test_closedir() {
@@ -31,15 +34,23 @@ struct TestHareThrowsDirent {
 		}
 
 		const hare::wrap::DIR dir(hare::throws::opendir("data"));
-		// order is random
+		// order is random so store it and order it afterwards
+		std::vector<std::string> entries;
 		struct dirent *entry = hare::throws::readdir(dir);
-		EQUAL_S(".", entry->d_name);
+		ASSERT(entry);
+		entries.push_back(entry->d_name);
 		entry = hare::throws::readdir(dir);
-		EQUAL_S("readonly.txt", entry->d_name);
+		ASSERT(entry);
+		entries.push_back(entry->d_name);
 		entry = hare::throws::readdir(dir);
-		EQUAL_S("..", entry->d_name);
-		entry = hare::throws::readdir(dir);
-		EQUAL_D(NULL, entry);
+		ASSERT(entry);
+		entries.push_back(entry->d_name);
+
+		hare::sort(entries);
+		EQUAL_S(".", entries[0]);
+		EQUAL_S("..", entries[1]);
+		EQUAL_S("readonly.txt", entries[2]);
+
 		entry = hare::throws::readdir(dir);
 		EQUAL_D(NULL, entry);
 		entry = hare::throws::readdir(dir);

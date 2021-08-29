@@ -11,7 +11,7 @@
 
 namespace hare {
 	// only possible if the compiler can deduce the size.
-	// i.e.: char buffer[32]; hare::snprintf(buffer, "%d", 1);
+	// i.e.: char buffer[32]; hare::snprintf(buffer, "%d", 42);
 	template<const size_t size, typename ... Args>
 	int snprintf(char (&buffer)[size], const char *format, Args ... args) {
 		return std::snprintf(buffer, size, format, args ...);

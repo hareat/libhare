@@ -29,7 +29,7 @@ namespace hare {
 
 		inline sighandler_t signal(int signum, sighandler_t handler) {
 			//  Note: handler NULL is a valid argument
-			sighandler_t result = ::signal(signum, handler);
+			sighandler_t const result = ::signal(signum, handler);
 			if (result == SIG_ERR)
 				throw hare::system_error("%s(%d) failed", __func__, signum);
 			return result;

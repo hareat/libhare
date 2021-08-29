@@ -30,7 +30,7 @@ namespace hare {
 		// On error, -1 is returned, and errno is set to indicate the error.
 		inline int dirfd(DIR *dirp) {
 			CHECK_NOT_NULL_ARG1(dirp);
-			int result = ::dirfd(dirp);
+			int const result = ::dirfd(dirp);
 			if (result == -1)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -38,13 +38,13 @@ namespace hare {
 
 		inline DIR* opendir(const char *name) {
 			CHECK_NOT_NULL_ARG1(name);
-			DIR *result = ::opendir(name);
+			DIR * const result = ::opendir(name);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s(\"%s\") failed", __func__, name);
 			return result;
 		}
 		inline DIR* fdopendir(int fd) {
-			DIR *result = ::fdopendir(fd);
+			DIR * const result = ::fdopendir(fd);
 			if (result == NULL)		// see (2)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -61,7 +61,7 @@ namespace hare {
 		inline struct dirent* readdir(DIR *dirp) {
 			CHECK_NOT_NULL_ARG1(dirp);
 			errno = 0;
-			struct dirent *result = ::readdir(dirp);
+			struct dirent * const result = ::readdir(dirp);
 			if (result == NULL && errno != 0)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
@@ -75,7 +75,7 @@ namespace hare {
                    int (*compar)(const struct dirent **,
                                  const struct dirent **)) {
 			CHECK_NOT_NULL_ARG1(dir);
-			int result = ::scandir(dir, namelist, filter, compar);
+			int const result = ::scandir(dir, namelist, filter, compar);
 			if (result == -1)
 				throw hare::system_error("%s(\"%s\") failed", __func__, dir);
 			return result;
@@ -85,7 +85,7 @@ namespace hare {
 		// On error, -1 is returned, and errno is set to indicate the error.
 		inline long telldir(DIR *dirp) {
 			CHECK_NOT_NULL_ARG1(dirp);
-			long result = ::telldir(dirp);
+			long const result = ::telldir(dirp);
 			if (result == -1)
 				throw hare::system_error("%s() failed", __func__);
 			return result;
