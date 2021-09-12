@@ -49,6 +49,14 @@ namespace hare {
 			CHECK_NOT_NULL_ARG1(result);
 			return result;
 		}
+		// In most cases we do not want to modify the environment, but in
+		// those seldom cases better use putenv or setenv for obviousness.
+		inline const char* getcenv(const char *name) {
+			return hare::throws::getenv(name);
+		}
+		inline const char* getcenv_mandatory(const char *name) {
+			return hare::throws::getenv_mandatory(name);
+		}
 		void putenv(char *key_value) {
 			CHECK_NOT_NULL_ARG1(key_value);
 			if (::putenv(key_value) != 0)	// see (2)

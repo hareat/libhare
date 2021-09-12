@@ -30,6 +30,11 @@ namespace hare {
 	inline char* getenv(const char *name) {
 		return name ? std::getenv(name) : nullptr;
 	}
+	// In most cases we do not want to modify the environment, but in
+	// those seldom cases better use putenv or setenv for obviousness.
+	inline const char* getcenv(const char *name) {
+		return hare::getenv(name);
+	}
 
 	inline double strtod(const char *number, char **endptr) {
 		if (number)
