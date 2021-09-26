@@ -1,0 +1,28 @@
+#ifndef HARE_THROWS_FSTREAM
+#define HARE_THROWS_FSTREAM
+
+#include <fstream>
+
+/***************************************************************
+ * hare/fstream handy convenience methods for fstream.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+#include <iterator>		// std::istreambuf_iterator
+#include <string>
+
+namespace hare {
+	namespace throws {
+		inline std::string file_read(const char *path) {
+			// to get an exception in case of a failing open
+			std::ifstream ifs;
+			ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+			ifs.open(path);
+			return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+		};
+		inline std::string file_read(const std::string& path) { return file_read(path.c_str()); }
+	}	// namespace throws
+}	// namespace hare
+
+#endif	// HARE_THROWS_FSTREAM

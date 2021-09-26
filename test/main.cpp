@@ -10,6 +10,7 @@
 #include "hare/TestStrprintf.h"
 #include "hare/throws/TestCstdio.h"
 #include "hare/throws/TestCstdlib.h"
+#include "hare/throws/TestCurl.h"
 #include "hare/throws/TestDirent.h"
 #include "hare/throws/TestStat.h"
 #include "hare/wrap/TestCstdio.h"
@@ -36,6 +37,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareStrprintf::test();
 		TestHareThrowsCstdio::test();
 		TestHareThrowsCstdlib::test();
+		TestHareThrowsCurl::test();
 		TestHareThrowsDirent::test();
 		TestHareThrowsStat::test();
 		TestHareWrapCstdio::test();
@@ -43,13 +45,13 @@ int main(const int argc, const char* argv[]) {
 
 		std::puts("All tests completed successfully");
 		return EXIT_SUCCESS;
-	} catch (const hare::system_error& ex) {
-		std::fprintf(stderr, "%s() caught: %s\n", __func__, ex.what());
+	} catch (const hare::backtrace_error& ex) {
+		std::fprintf(stderr, "%s() caught hare::backtrace_error: %s\n", __func__, ex.what());
 		std::fflush(stderr);
-		ex.backtrace_write(2);
+		ex.backtrace_write_addr2line(2);
 		return EXIT_FAILURE;
 	} catch (const std::exception& ex) {
-		std::fprintf(stderr, "%s() caught: %s\n", __func__, ex.what());
+		std::fprintf(stderr, "%s() caught std::exception: %s\n", __func__, ex.what());
 		return EXIT_FAILURE;
 	}
 }

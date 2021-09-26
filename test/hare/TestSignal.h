@@ -22,7 +22,7 @@ struct TestHareSignal {
 	static void test_itoa() {
 		char ach[5] = "";
 		EQUAL_S( "123", sigsaf::itoa(  123, ach, 10));
-		EQUAL_S( "ABC", sigsaf::itoa(0xABC, ach, 16));
+		EQUAL_S( "abc", sigsaf::itoa(0xABC, ach, 16));
 		EQUAL_S("1234", sigsaf::itoa(01234, ach,  8));
 		EQUAL_S( "111", sigsaf::itoa(    7, ach,  2));
 		EQUAL_S("-123", sigsaf::itoa( -123, ach, 10));

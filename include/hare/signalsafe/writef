@@ -18,8 +18,8 @@
 namespace hare {
 	namespace signalsafe {
 		// filles from the tail and returns the address of the starting
-		// position of the unsigned integer as string.
-		inline char* uitoa(unsigned int n, char *buf, size_t size, const int base) {
+		// position of the unsigned long integer as string.
+		inline char* ultoa(unsigned long n, char *buf, size_t size, const int base, const bool upper_case = false) {
 			if (!buf || !size)
 				return buf;
 			buf[--size] = '\0';
@@ -31,7 +31,7 @@ namespace hare {
 				if (digit < 10)
 					ch = digit + '0';
 				else
-					ch = digit - 10 + 'A';
+					ch = digit - 10 + (upper_case ? 'A' : 'a');
 				buf[--size] = ch;
 
 				n /= base;
@@ -43,17 +43,17 @@ namespace hare {
 			return buf;
 		}
 		template<size_t size>
-		char* uitoa(unsigned int n, char (&ach)[size], const int base) {
-			return uitoa(n, ach, size, base);
+		char* ultoa(unsigned long n, char (&ach)[size], const int base, const bool upper_case = false) {
+			return ultoa(n, ach, size, base, upper_case);
 		}
 
 		// filles from the tail and returns the address of the starting
-		// position of the integer as string.
-		inline char* itoa(int n, char *buf, size_t size, const int base) {
+		// position of the long integer as string.
+		inline char* ltoa(long n, char *buf, size_t size, const int base, const bool upper_case = false) {
 			if (n >= 0) {
-				return uitoa(n, buf, size, base);
+				return ultoa(n, buf, size, base, upper_case);
 			} else {
-				char *result = uitoa(-n, buf, size, base);
+				char *result = ultoa(-n, buf, size, base, upper_case);
 				if (result != buf) {
 					--result;
 					*result = '-';
@@ -68,8 +68,28 @@ namespace hare {
 			}
 		}
 		template<size_t size>
-		char* itoa(int n, char (&ach)[size], const int base) {
-			return itoa(n, ach, size, base);
+		char* ltoa(long n, char (&ach)[size], const int base, const bool upper_case = false) {
+			return ltoa(n, ach, size, base, upper_case);
+		}
+
+		// filles from the tail and returns the address of the starting
+		// position of the unsigned integer as string.
+		inline char* uitoa(unsigned int n, char *buf, size_t size, const int base, const bool upper_case = false) {
+			return ultoa(n, buf, size, base, upper_case);
+		}
+		template<size_t size>
+		char* uitoa(unsigned int n, char (&ach)[size], const int base, const bool upper_case = false) {
+			return uitoa(n, ach, size, base, upper_case);
+		}
+
+		// filles from the tail and returns the address of the starting
+		// position of the integer as string.
+		inline char* itoa(int n, char *buf, size_t size, const int base, const bool upper_case = false) {
+			return ltoa(n, buf, size, base, upper_case);
+		}
+		template<size_t size>
+		char* itoa(int n, char (&ach)[size], const int base, const bool upper_case = false) {
+			return itoa(n, ach, size, base, upper_case);
 		}
 
 		inline ssize_t writef(int fd, const char *format, ...) {
@@ -95,11 +115,21 @@ namespace hare {
 						}
 						case 'd':
 						case 'o':
+						case 'X':
 						case 'x': {
 							char buffer[55] = "";
 							hare::signalsafe::write(fd, itoa(va_arg(ap, int), buffer,
-								(*end == 'd') ? 10 : ((*end == 'x') ? 16 : 8)));	// base
+								(*end == 'd') ? 10 : ((*end == 'x') ? 16 : 8),
+								*end == 'X'));	// upper case or lower case
 							start = ++end;	// skip 'd', 'o' or 'x'
+							break;
+						}
+						case 'P':
+						case 'p': {
+							char buffer[55] = "";
+							hare::signalsafe::write(fd, ultoa((unsigned long) va_arg(ap, void*), buffer, 16,
+								*end == 'P'));	// upper case or lower case
+							start = ++end;	// skip 'p'
 							break;
 						}
 						case 's':
