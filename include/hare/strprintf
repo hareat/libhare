@@ -35,7 +35,7 @@ namespace hare {
 			return format;
 		// above we have sized to length + 1
 		// so everyting else is strange and completely unexpected
-		if (length >= result.size())
+		if ((size_t) length >= result.size())
 			return format;
 
 		result.resize(length);

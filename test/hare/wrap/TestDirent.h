@@ -3,8 +3,6 @@
 #include <hare/throws/dirent.h>
 #include <hare/wrap/dirent.h>
 
-#include <hare/algorithm>
-
 inline int is_file(const struct dirent *entry) {
 	return entry->d_type == DT_REG;
 }
@@ -19,17 +17,19 @@ struct TestHareWrapDirent {
 		struct dirent** itor = namelist.begin();
 		EQUAL_S(".", (*itor++)->d_name);
 		EQUAL_S("..", (*itor++)->d_name);
+		EQUAL_S("3lines.txt", (*itor++)->d_name);
+		EQUAL_S("3lines_noeol.txt", (*itor++)->d_name);
+		EQUAL_S("empty.txt", (*itor++)->d_name);
 		EQUAL_S("readonly.txt", (*itor++)->d_name);
 		ASSERT(itor == namelist.end());
 
-		namelist.scandir("data", is_file, NULL);
+		namelist.scandir("data", is_file, alphasort);
 		itor = namelist.begin();
+		EQUAL_S("3lines.txt", (*itor++)->d_name);
+		EQUAL_S("3lines_noeol.txt", (*itor++)->d_name);
+		EQUAL_S("empty.txt", (*itor++)->d_name);
 		EQUAL_S("readonly.txt", (*itor++)->d_name);
 		ASSERT(itor == namelist.end());
-		for (struct dirent *entry : namelist)
-			EQUAL_S("readonly.txt", entry->d_name);
-		hare::for_each(namelist, [](struct dirent *entry) { EQUAL_S("readonly.txt", entry->d_name); });
-		std::for_each(namelist.begin(), namelist.end(), [](struct dirent *entry) { EQUAL_S("readonly.txt", entry->d_name); });
 
 		namelist.scandir("data", is_directory, alphasort);
 		itor = namelist.begin();

@@ -146,6 +146,11 @@ namespace hare {
 		std::replace(container.begin(), container.end(), old_value, new_value);
 	}
 
+	template<class Container>
+	void reverse(Container& container)	{
+		std::reverse(container.begin(), container.end());
+	}
+
 	template<class Container1, class Container2>
 	typename Container1::const_iterator search(const Container1& container1, const Container2& container2) {
 		return std::search(container1.begin(), container1.end(), container2.begin(), container2.end());

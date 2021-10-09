@@ -2,10 +2,12 @@
 #include "hare/TestCstdio.h"
 #include "hare/TestCstdlib.h"
 #include "hare/TestCstring.h"
+#include "hare/TestFstream.h"
 #include "hare/TestFunctional.h"
 #include "hare/TestLeakyBucket.h"
 #include "hare/TestMacSz.h"
 #include "hare/TestNumeric.h"
+#include "hare/TestPwd.h"
 #include "hare/TestSignal.h"
 #include "hare/TestStrprintf.h"
 #include "hare/throws/TestCstdio.h"
@@ -29,10 +31,12 @@ int main(const int argc, const char* argv[]) {
 		TestHareCstdio::test();
 		TestHareCstdlib::test();
 		TestHareCstring::test();
+		TestHareFstream::test();
 		TestHareFunctional::test();
 		TestHareLeakyBucket::test();
 		TestHareMacSz::test();
 		TestHareNumeric::test();
+		TestHarePwd::test();
 		TestHareSignal::test();
 		TestHareStrprintf::test();
 		TestHareThrowsCstdio::test();

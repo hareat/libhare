@@ -2,9 +2,16 @@
 
 #include <hare/algorithm>
 
+#include <string>
 #include <vector>
 
 struct TestHareAlgorithm {
+	static void test_reverse() {
+		std::string actual("hello");
+		hare::reverse(actual);
+		EQUAL_S("olleh", actual);
+	}
+
 	static void test_unique() {
 		std::vector<int> vi = {1, 1, 1, 2, 2, 2, 3, 3, 3};
 		EQUAL_D(9, vi.size());
@@ -15,6 +22,7 @@ struct TestHareAlgorithm {
 	}
 
 	static void test() {
+		test_reverse();
 		test_unique();
 	}
 };

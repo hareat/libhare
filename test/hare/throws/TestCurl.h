@@ -1,7 +1,7 @@
 #include "test.h"
 
 #include <hare/throws/curl.h>
-#include <hare/throws/fstream>	// file_read
+#include <hare/fstream>	// file_read
 
 struct TestHareThrowsCurl {
 	static void test_get() {
@@ -23,7 +23,7 @@ struct TestHareThrowsCurl {
 		hare::throws::curl_set_write(curl, data);
 		hare::throws::curl_easy_perform(curl, "https://raw.githubusercontent.com/hareat/libhare/main/test/data/readonly.txt");
 		EQUAL_D(200, hare::throws::curl_get_response_code(curl));
-		EQUAL_S(hare::throws::file_read("data/readonly.txt"), data);
+		EQUAL_S(hare::fstream::read("data/readonly.txt"), data);
 	}
 
 	static void test() {

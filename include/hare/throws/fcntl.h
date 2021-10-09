@@ -3,15 +3,14 @@
 
 #include <fcntl.h>
 
-/******************************************************************
- * hare/fcntl.h throws an exception (derived of std::system_error)
- * in case of any error from fcntl.h.
+/***************************************************************************
+ * Throws an exception (derived of std::system_error) in case of any error.
  *
  * (1) Many functions return -1 in case of an error and set errno
  *     to indicate the error.
  *
  * @author Hannes Reisinger github@HaRe.at
- ******************************************************************/
+ ***************************************************************************/
 
 #include <hare/stdexcept>	// CHECK_NOT_NULL_ARG
 #include <hare/system_error>

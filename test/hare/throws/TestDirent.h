@@ -36,25 +36,22 @@ struct TestHareThrowsDirent {
 		const hare::wrap::DIR dir(hare::throws::opendir("data"));
 		// order is random so store it and order it afterwards
 		std::vector<std::string> entries;
-		struct dirent *entry = hare::throws::readdir(dir);
-		ASSERT(entry);
-		entries.push_back(entry->d_name);
+		const std::vector<const char*>  expected = {".", "..", "3lines.txt", "3lines_noeol.txt", "empty.txt", "readonly.txt"};
+		struct dirent *entry = nullptr;
+		for (size_t i = 0; i < expected.size(); ++i) {
+			entry = hare::throws::readdir(dir);
+			ASSERT(entry);
+			entries.push_back(entry->d_name);
+		}
 		entry = hare::throws::readdir(dir);
-		ASSERT(entry);
-		entries.push_back(entry->d_name);
+		EQUAL_D(NULL, entry);
 		entry = hare::throws::readdir(dir);
-		ASSERT(entry);
-		entries.push_back(entry->d_name);
+		EQUAL_D(NULL, entry);
 
 		hare::sort(entries);
-		EQUAL_S(".", entries[0]);
-		EQUAL_S("..", entries[1]);
-		EQUAL_S("readonly.txt", entries[2]);
-
-		entry = hare::throws::readdir(dir);
-		EQUAL_D(NULL, entry);
-		entry = hare::throws::readdir(dir);
-		EQUAL_D(NULL, entry);
+		for (size_t i = 0; i < expected.size(); ++i) {
+			EQUAL_S(expected.at(i), entries.at(i));
+		}
 	}
 
 	static void test_scandir() {

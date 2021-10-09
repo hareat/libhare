@@ -4,7 +4,7 @@
 #include <dirent.h>
 
 /***************************************************************************
- *  Throws an exception (derived of std::system_error) in case of any error.
+ * Throws an exception (derived of std::system_error) in case of any error.
  *
  * (1) Many functions return 0 on sucess and return -1 in case of an error
  *     and set errno to indicate the error.

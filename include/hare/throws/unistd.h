@@ -65,29 +65,36 @@ namespace hare {
 			int const result = ::execv(path, argv);
 			if (result == -1)	// see (2)
 				throw hare::system_error("%s(%s) failed", __func__, path);
-			retunr result;
+			return result;
 		}
 
 		inline int execvp(const char* file, char *const argv[]) {
 			int const result = ::execvp(file, argv);
 			if (result == -1)	// see (2)
 				throw hare::system_error("%s(%s) failed", __func__, file);
-			retunr result;
+			return result;
 		}
 
 		inline int execvpe(const char* file, char *const argv[], char *const envp[]) {
 			int const result = ::execvpe(file, argv, envp);
 			if (result == -1)	// see (2)
 				throw hare::system_error("%s(%s) failed", __func__, file);
-			retunr result;
+			return result;
 		}
 
 		inline pid_t fork() {
 			pid_t const result = ::fork();
 			if (result == -1)	// -1 on error, 0 in child, else is child pid in parent
 				throw hare::system_error("%s() failed", __func__);
-			retunr result;
+			return result;
 		}
+
+		inline void unlink(const char *path) {
+			CHECK_NOT_NULL_ARG1(path);
+			if (::unlink(path) == -1)	// see (1)
+				throw hare::system_error("%s('%s') failed", __func__, path);
+		}
+		inline void unlink(const std::string& path) { unlink(path.c_str()); }
 	}	// namespace throws
 }	// namespace hare
 

@@ -12,12 +12,12 @@ struct TestHareThrowsCstdlib {
 			EQUAL_S("getenv(key is NULL)", ex.what());
 		}
 
-		EQUAL_D(NULL, hare::throws::getenv("do not exist"));
+		EQUAL_D(NULL, hare::throws::getenv("does not exist"));
 		try {
-			hare::throws::getenv_mandatory("do not exist");
+			hare::throws::getenv_mandatory("does not exist");
 			FAIL("should not reach");
-		} catch (const std::invalid_argument& ex) {
-			EQUAL_S("getenv_mandatory(result is NULL)", ex.what());
+		} catch (const std::runtime_error& ex) {
+			EQUAL_S("getenv_mandatory(does not exist) result is NULL", ex.what());
 		}
 	}
 

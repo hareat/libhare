@@ -3,8 +3,8 @@
 
 #include <cstdlib>
 
-/***************************************************************
- * Throws an exception in case of any error.
+/***************************************************************************
+ * Throws an exception (derived of std::system_error) in case of any error.
  *
  * (1) Other functions return NULL in case of an error and set errno
  *     to indicate the error.
@@ -12,9 +12,10 @@
  * (2) returns zero on success, or nonzero if an error occurs.
  *
  * @author Hannes Reisinger github@HaRe.at
- ***************************************************************/
+ ***************************************************************************/
 
 #include <hare/stdexcept>	// CHECK_NOT_NULL_ARG
+#include <hare/system_error>
 
 namespace hare {
 	namespace throws {
@@ -46,46 +47,52 @@ namespace hare {
 		inline char* getenv_mandatory(const char *key) {
 			CHECK_NOT_NULL_ARG1(key);
 			char * const result = std::getenv(key);
-			CHECK_NOT_NULL_ARG1(result);
+			if (!result) \
+				throw hare::runtime_error("%s(%s) result is NULL", __func__, key);
 			return result;
 		}
 		// In most cases we do not want to modify the environment, but in
 		// those seldom cases better use putenv or setenv for obviousness.
-		inline const char* getcenv(const char *name) {
-			return hare::throws::getenv(name);
+		inline const char* getcenv(const char *key) {
+			CHECK_NOT_NULL_ARG1(key);
+			return std::getenv(key);
 		}
-		inline const char* getcenv_mandatory(const char *name) {
-			return hare::throws::getenv_mandatory(name);
+		inline const char* getcenv_mandatory(const char *key) {
+			CHECK_NOT_NULL_ARG1(key);
+			char * const result = std::getenv(key);
+			if (!result) \
+				throw hare::runtime_error("%s(%s) result is NULL", __func__, key);
+			return result;
 		}
-		void putenv(char *key_value) {
+		inline void putenv(char *key_value) {
 			CHECK_NOT_NULL_ARG1(key_value);
 			if (::putenv(key_value) != 0)	// see (2)
 				throw hare::system_error("%s(\"%s\") failed", __func__, key_value);
 		}
-		void setenv(const char *key, const char *value, int overwrite) {
+		inline void setenv(const char *key, const char *value, int overwrite) {
 			CHECK_NOT_NULL_ARG2(key, value);
 			if (::setenv(key, value, overwrite) != 0)	// see (2)
 				throw hare::system_error("%s(\"%s\", \"%s\", %d) failed", __func__, key, value, overwrite);
 		}
-		void unsetenv(const char *key) {
+		inline void unsetenv(const char *key) {
 			CHECK_NOT_NULL_ARG1(key);
 			if (::unsetenv(key) != 0)	// see (2)
 				throw hare::system_error("%s(\"%s\") failed", __func__, key);
 		}
 
-		void *calloc(size_t count, size_t size_each) {
+		inline void *calloc(size_t count, size_t size_each) {
 			void * const result = std::calloc(count, size_each);
 			if (result == NULL)		// see (1)
 				throw hare::system_error("%s(%uz, %uz) failed", __func__, count, size_each);
 			return result;
 		}
-		void *malloc(size_t size) {
+		inline void *malloc(size_t size) {
 			void * const result = std::malloc(size);
 			if (result == NULL)		// see (1)
 				throw hare::system_error("%s(%uz) failed", __func__, size);
 			return result;
 		}
-		void *realloc(void *ptr, size_t size) {
+		inline void *realloc(void *ptr, size_t size) {
 			void * const result = std::realloc(ptr, size);
 			if (result == NULL)		// see (1)
 				throw hare::system_error("%s(%uz) failed", __func__, size);

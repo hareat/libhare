@@ -18,6 +18,11 @@ namespace hare {
 		invalid_argument(const char *format, Args ... args)
 			: std::invalid_argument(strprintf<256>(format, args ...)) {}
 	};
+	struct runtime_error : public std::runtime_error {
+		template<typename ... Args>
+		runtime_error(const char *format, Args ... args)
+			: std::runtime_error(strprintf<256>(format, args ...)) {}
+	};
 }	// namespace hare
 
 

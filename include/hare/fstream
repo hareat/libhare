@@ -1,0 +1,84 @@
+#ifndef HARE_FSTREAM
+#define HARE_FSTREAM
+
+#include <fstream>
+
+/***************************************************************
+ * hare/fstream handy convenience methods for fstream.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+#include <algorithm>	// std::reverse
+#include <iterator>		// std::istreambuf_iterator
+#include <string>
+
+namespace hare {
+	namespace fstream {
+		inline std::string read(const char *path) {
+			// to get an exception in case of a failing open
+			std::ifstream ifs;
+			ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+			ifs.open(path);
+			return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+		};
+		inline std::string read(const std::string& path) { return read(path.c_str()); }
+
+		inline std::string head(const char *path, size_t lines = 10, const char delimiter = '\n') {
+			// to get an exception in case of a failing open
+			std::ifstream ifs;
+			ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+			ifs.open(path);
+
+			ifs.exceptions(std::ifstream::goodbit);	// for ifs.get() as bool
+			std::string result;
+			result.reserve(lines * 80);	// to avoid numerous memory allocations
+			char ch;
+			while (lines && ifs.get(ch)) {
+				result += ch;
+				if (ch == delimiter)
+					--lines;
+			}
+			return result;
+		};
+		inline std::string head(const std::string& path, size_t lines = 10, const char delimiter = '\n') { return head(path.c_str(), lines, delimiter); }
+
+		inline std::string tail(const char *path, size_t lines = 10, const char delimiter = '\n') {
+			// to get an exception in case of a failing open
+			std::ifstream ifs;
+			ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+			ifs.open(path);
+
+			ifs.exceptions(std::ifstream::goodbit);	// for ifs.seekg() as bool
+			std::string result;
+			result.reserve(lines * 80);	// to avoid numerous memory allocations
+			char ch;
+			if (ifs.seekg(-1, std::ios::end)) {
+				ifs.get(ch);
+				result += ch;
+				while (ifs.seekg(-2, std::ios::cur)) {
+					ifs.get(ch);
+					if (ch == delimiter)
+						--lines;
+					if (!lines)
+						break;
+					result += ch;
+				}
+				std::reverse(result.begin(), result.end());
+			}
+			return result;
+		};
+		inline std::string tail(const std::string& path, size_t lines = 10, const char delimiter = '\n') { return tail(path.c_str(), lines, delimiter); }
+
+		inline void write(const char *path, const std::string& content) {
+			// to get an exception in case of a failing open
+			std::ofstream ofs;
+			ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+			ofs.open(path);
+			ofs << content;
+		};
+		inline void write(const std::string& path, const std::string& content) { write(path.c_str(), content); }
+	}	// namespace fstream
+}	// namespace hare
+
+#endif	// HARE_FSTREAM
