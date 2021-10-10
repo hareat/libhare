@@ -21,7 +21,7 @@ namespace hare {
 			CHECK_NOT_NULL_ARG1(path);
 			const int result = ::creat(path, mode);
 			if (result == -1)		// see (1)
-				throw error(strprintf("%s('%s', %o) failed", __func__, path, mode));
+				throw error(strprintf("%s(\"%s\", %o) failed", __func__, path, mode));
 			return result;
 		}
 		inline int creat(const std::string& path, mode_t mode) {
@@ -51,7 +51,7 @@ namespace hare {
 			CHECK_NOT_NULL_ARG1(path);
 			const int result = ::open(path, flags, mode);
 			if (result == -1)		// see (1)
-				throw error(strprintf("%s('%s', %o, %o) failed", __func__, path, flags, mode));
+				throw error(strprintf("%s(\"%s\", %o, %o) failed", __func__, path, flags, mode));
 			return result;
 		}
 		inline int open(const std::string& path, int flags, mode_t mode) {
@@ -73,7 +73,7 @@ namespace hare {
 			CHECK_NOT_NULL_ARG1(path);
 			const int result = ::openat(dirfd, path, flags, mode);
 			if (result == -1)		// see (1)
-				throw error(strprintf("%s('%s', %o, %o) failed", __func__, path, flags, mode));
+				throw error(strprintf("%s(\"%s\", %o, %o) failed", __func__, path, flags, mode));
 			return result;
 		}
 		inline int openat(int dirfd, const std::string& path, int flags, mode_t mode) {

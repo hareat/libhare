@@ -35,6 +35,10 @@ namespace hare {
 	inline const char* getcenv(const char *name) {
 		return hare::getenv(name);
 	}
+	inline const char* getcenv(const char *name, const char *defaultValue) {
+		const char* result = hare::getenv(name);
+		return result ? result : defaultValue;
+	}
 
 	inline double strtod(const char *number, char **endptr) {
 		if (number)

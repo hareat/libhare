@@ -48,7 +48,7 @@ namespace hare {
 			CHECK_NOT_NULL_ARG1(key);
 			char * const result = std::getenv(key);
 			if (!result) \
-				throw hare::runtime_error("%s(%s) result is NULL", __func__, key);
+				throw hare::runtime_error("%s(\"%s\") result is NULL", __func__, key);
 			return result;
 		}
 		// In most cases we do not want to modify the environment, but in
@@ -61,7 +61,7 @@ namespace hare {
 			CHECK_NOT_NULL_ARG1(key);
 			char * const result = std::getenv(key);
 			if (!result) \
-				throw hare::runtime_error("%s(%s) result is NULL", __func__, key);
+				throw hare::runtime_error("%s(\"%s\") result is NULL", __func__, key);
 			return result;
 		}
 		inline void putenv(char *key_value) {
