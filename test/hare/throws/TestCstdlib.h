@@ -17,7 +17,7 @@ struct TestHareThrowsCstdlib {
 			hare::throws::getenv_mandatory("does not exist");
 			FAIL("should not reach");
 		} catch (const std::runtime_error& ex) {
-			EQUAL_S("getenv_mandatory(does not exist) result is NULL", ex.what());
+			EQUAL_S("getenv_mandatory(\"does not exist\") result is NULL", ex.what());
 		}
 	}
 

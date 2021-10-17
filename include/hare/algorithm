@@ -203,21 +203,35 @@ namespace hare {
 	 ***************************************************************/
 
 	template<class InputIterator, class T>
-	bool any_of(InputIterator first, InputIterator last, const T& value) {
+	bool any(InputIterator first, InputIterator last, const T& value) {
 		return std::find(first, last, value) != last;
 	}
 	template<class Container, class T>
-	bool any_of(const Container& container, const T& value) {
-		return hare::any_of(container.begin(), container.end(), value);
+	bool any(const Container& container, const T& value) {
+		return hare::any(container.begin(), container.end(), value);
 	}
 
 	template<class InputIterator, class T>
-	bool none_of(InputIterator first, InputIterator last, const T& value) {
+	bool none(InputIterator first, InputIterator last, const T& value) {
 		return std::find(first, last, value) == last;
 	}
 	template<class Container, class T>
-	bool none_of(const Container& container, const T& value) {
-		return hare::none_of(container.begin(), container.end(), value);
+	bool none(const Container& container, const T& value) {
+		return hare::none(container.begin(), container.end(), value);
+	}
+
+	// to have a single test for emptyness
+	template<class Container>
+	bool empty(const Container& container) {
+		return container.empty();
+	}
+	bool empty(const char *sz) {
+		return sz == nullptr || *sz == '\0';
+	}
+
+	template<class T>
+	bool between(const T& value, const T& min, const T& max) {
+		return min <= value && value <= max;
 	}
 
 

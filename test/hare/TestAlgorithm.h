@@ -21,8 +21,14 @@ struct TestHareAlgorithm {
 		EQUAL_D(3, vi.back());
 	}
 
+	static void test_between() {
+		EQUAL_D(1, hare::between(3, 2, 4));
+		EQUAL_D(0, hare::between(33, 2, 4));
+	}
+
 	static void test() {
 		test_reverse();
 		test_unique();
+		test_between();
 	}
 };

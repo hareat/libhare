@@ -9,10 +9,23 @@
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************/
 
+#include <errno.h>
+
 namespace hare {
 	/***************************************************************
 	 * std functions don't like nullptr.
 	 ***************************************************************/
+
+	inline char* strcat(char *dest, const char *src) {
+		return (dest && src) ? std::strcat(dest, src) : dest;
+	}
+
+	inline const char* strchr(const char *sz, int c) {
+		return sz ? std::strchr(sz, c) : nullptr;
+	}
+	inline char* strchr(char *sz, int c) {
+		return sz ? std::strchr(sz, c) : nullptr;
+	}
 
 	inline int strcmp(const char *left, const char *right) {
 		if (left == right)	// maybe both are nullptr
@@ -27,6 +40,46 @@ namespace hare {
 
 	inline size_t strlen(const char *sz) {
 		return sz ? std::strlen(sz) : 0;
+	}
+
+	inline char* strdup(const char *sz) {
+		if (sz) {
+			return ::strdup(sz);
+		} else {
+			errno = EINVAL;
+			return nullptr;
+		}
+	}
+	inline char* strndup(const char *sz, size_t n) {
+		if (sz) {
+			return ::strndup(sz, n);
+		} else {
+			errno = EINVAL;
+			return nullptr;
+		}
+	}
+
+	inline size_t strspn(const char *sz, const char *accept) {
+		return (sz && accept) ? std::strspn(sz, accept) : 0;
+	}
+	inline size_t strcspn(const char *sz, const char *reject) {
+		return std::strcspn(sz ? sz : "", reject ? reject : "");
+	}
+
+	inline const char* strstr(const char *haystack, const char *needle) {
+		return (haystack && needle) ? std::strstr(haystack, needle) : nullptr;
+	}
+	inline char* strstr(char *haystack, const char *needle) {
+		return (haystack && needle) ? std::strstr(haystack, needle) : nullptr;
+	}
+
+
+	/***************************************************************
+	 * Some small extensions.
+	 ***************************************************************/
+
+	bool between(const char *value, const char *min, const char *max) {
+		return hare::strcmp(min, value) <= 0 && hare::strcmp(value, max) <= 0;
 	}
 }	// namespace hare
 

@@ -3,6 +3,10 @@
 #include <hare/cstdio>
 
 struct TestHareCstdio {
+	static void test_fopen() {
+		EQUAL_D(NULL, std::fopen(CHAR_PTR_NULL, "r"));
+	}
+
 	static void test_snprintf() {
 		char buffer[5];
 		EQUAL_D(2, hare::snprintf(buffer, "%d", 12));
@@ -12,6 +16,7 @@ struct TestHareCstdio {
 	}
 
 	static void test() {
+		test_fopen();
 		test_snprintf();
 	}
 };

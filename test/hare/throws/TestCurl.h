@@ -17,7 +17,7 @@ struct TestHareThrowsCurl {
 			hare::throws::curl_easy_perform(curl, "http://does.not.exist/");
 			FAIL("should not reach");
 		} catch (const hare::curl_error& ex) {
-			EQUAL_S("curl_easy_perform(http://does.not.exist/) failed: Couldn't resolve host name", ex.what());
+			EQUAL_S("curl_easy_perform(\"http://does.not.exist/\") failed: Couldn't resolve host name", ex.what());
 		}
 		std::string data;
 		hare::throws::curl_set_write(curl, data);
