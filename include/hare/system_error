@@ -110,8 +110,8 @@ namespace hare {
 	 **********************************************************************/
 	struct system_error : public backtrace_error {
 		system_error() : backtrace_error(errno, std::system_category()) {}
-		system_error(const std::string& what) : backtrace_error(errno, std::system_category(), what) {}
-		system_error(const char *what) : backtrace_error(errno, std::system_category(), what) {}
+		system_error(const std::string& what_arg) : backtrace_error(errno, std::system_category(), what_arg) {}
+		system_error(const char *what_arg) : backtrace_error(errno, std::system_category(), what_arg) {}
 		template<typename ... Args>
 		system_error(const char *format, Args ... args)
 			: backtrace_error(errno, std::system_category(), strprintf<256>(format, args ...)) {}

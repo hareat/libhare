@@ -229,9 +229,10 @@ namespace hare {
 		return sz == nullptr || *sz == '\0';
 	}
 
+	// In the sense of a closed interval [left, right] like SQL BETWEEN.
 	template<class T>
-	bool between(const T& value, const T& min, const T& max) {
-		return min <= value && value <= max;
+	bool between(const T& value, const T& left, const T& right) {
+		return left <= value && value <= right;
 	}
 
 
