@@ -4,6 +4,7 @@
 #include "hare/TestCstring.h"
 #include "hare/TestFstream.h"
 #include "hare/TestFunctional.h"
+#include "hare/TestIconv.h"
 #include "hare/TestLeakyBucket.h"
 #include "hare/TestMacSz.h"
 #include "hare/TestNumeric.h"
@@ -14,6 +15,7 @@
 #include "hare/throws/TestCstdlib.h"
 #include "hare/throws/TestCurl.h"
 #include "hare/throws/TestDirent.h"
+#include "hare/throws/TestIconv.h"
 #include "hare/throws/TestStat.h"
 #include "hare/wrap/TestCstdio.h"
 #include "hare/wrap/TestDirent.h"
@@ -33,6 +35,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareCstring::test();
 		TestHareFstream::test();
 		TestHareFunctional::test();
+		TestHareIconv::test();
 		TestHareLeakyBucket::test();
 		TestHareMacSz::test();
 		TestHareNumeric::test();
@@ -43,6 +46,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareThrowsCstdlib::test();
 		TestHareThrowsCurl::test();
 		TestHareThrowsDirent::test();
+		TestHareThrowsIconv::test();
 		TestHareThrowsStat::test();
 		TestHareWrapCstdio::test();
 		TestHareWrapDirent::test();
