@@ -7,6 +7,7 @@
 #include "hare/TestIconv.h"
 #include "hare/TestLeakyBucket.h"
 #include "hare/TestMacSz.h"
+#include "hare/TestMemory.h"
 #include "hare/TestNumeric.h"
 #include "hare/TestPwd.h"
 #include "hare/TestSignal.h"
@@ -18,6 +19,7 @@
 #include "hare/throws/TestIconv.h"
 #include "hare/throws/TestStat.h"
 #include "hare/wrap/TestCstdio.h"
+#include "hare/wrap/TestCstdlib.h"
 #include "hare/wrap/TestDirent.h"
 
 #include <exception>
@@ -38,6 +40,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareIconv::test();
 		TestHareLeakyBucket::test();
 		TestHareMacSz::test();
+		TestHareMemory::test();
 		TestHareNumeric::test();
 		TestHarePwd::test();
 		TestHareSignal::test();
@@ -49,6 +52,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareThrowsIconv::test();
 		TestHareThrowsStat::test();
 		TestHareWrapCstdio::test();
+		TestHareWrapCstdlib::test();
 		TestHareWrapDirent::test();
 
 		std::puts("All tests completed successfully");

@@ -90,11 +90,11 @@ struct TestHareCstring {
 	}
 
 	static void test_between() {
-		EQUAL_D(1, hare::between("inside",  "abc", "mno"));
-		EQUAL_D(0, hare::between("outside", "abc", "mno"));
-		EQUAL_D(1, hare::between("inside",  NULL, "mno"));
-		EQUAL_D(0, hare::between(NULL, "abc", "mno"));
-		EQUAL_D(1, hare::between(NULL, NULL, NULL));
+		EQUAL_D(1, hare::between("abc", "inside",  "mno"));
+		EQUAL_D(0, hare::between("abc", "outside", "mno"));
+		EQUAL_D(1, hare::between(NULL,  "inside",  "mno"));
+		EQUAL_D(0, hare::between("abc", NULL,      "mno"));
+		EQUAL_D(1, hare::between(NULL,  NULL,      NULL));
 	}
 
 	static void test() {

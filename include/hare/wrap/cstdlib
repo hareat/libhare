@@ -1,0 +1,82 @@
+#ifndef HARE_WRAP_CSTDLIB
+#define HARE_WRAP_CSTDLIB
+
+#include <cstdlib>
+
+/***************************************************************************
+ * hare/cstdlib some convenience helper for cstdlib.
+ *
+ *
+ * @usage
+ * 	const char *path = <your path>;
+ *	const hare::wrap::FILE fp(fopen(path, "w"));
+ *	if (!fp)
+ *		perror(path);
+ *	else {
+ *		fputs(<your data>, fp);
+ *		...
+ *	<automatically closes an open FILE pointer also in case of an exception>
+ * or simpler
+ *	const hare::wrap::FILE fp(hare::throws::fopen(<your path>, "w"));
+ *	hare::throws::fputs(<your data>, fp);
+ *	...
+ *	<automatically closes an open FILE pointer also in case of an exception>
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************************/
+
+#include <hare/system_error>
+
+namespace hare {
+	namespace wrap {
+		/******************************************************************
+		 * hare::wrap::auto_free encapsulates a std C pointer to ensure
+		 * free() is called also in case of an exception.
+		 * see std::auto_ptr for a description.
+		 ******************************************************************/
+		template <class T = char>
+		class auto_free {
+			T *m_p;	// the encapsulated std C pointer
+		public:
+			auto_free() : m_p(nullptr) {}
+			auto_free(T *p) : m_p(p) {}
+			auto_free(auto_free& af) {
+				reset(af.m_p);
+				af.m_p = nullptr;
+			}
+			~auto_free() { if (m_p) std::free(m_p); }
+
+			auto_free(const auto_free&) = delete;
+			auto_free& operator=(const auto_free&) = delete;
+
+			void reset(T *p = nullptr) {
+				if (m_p)
+					std::free(m_p);
+				m_p = p;
+			}
+
+			T& operator*() const { return *m_p; }
+			T* operator->() const { return m_p; }
+			T* get() const { return m_p; }
+			T* release() const {
+				T *result = m_p;
+				m_p = nullptr;
+				return result;
+			}
+
+			void free() {
+				if (m_p) {
+					std::free(m_p);
+					m_p = nullptr;
+				}
+			}
+		};
+	}	// namespace wrap
+}	// namespace hare
+
+
+// to avoid accidentally calls
+template <class T = void>
+void free(hare::wrap::auto_free<T> &af) { af.free(); }
+
+#endif	// HARE_WRAP_CSTDLIB

@@ -6,6 +6,8 @@
 /***************************************************************
  * hare/curl.h handy convenience methods for curl.h.
  *
+ * https://curl.se/libcurl/c/
+ *
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************/
 

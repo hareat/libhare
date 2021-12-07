@@ -10,6 +10,7 @@
  ***************************************************************************/
 
 #include <hare/curl.h>
+#include <hare/stdexcept>
 #include <hare/strprintf>
 #include <hare/system_error>
 

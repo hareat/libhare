@@ -6,11 +6,19 @@
 /***************************************************************
  * hare/iconv.h handy convenience methods for iconv.h.
  *
+ * https://de.wikipedia.org/wiki/ISO_8859
+ *
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************/
 
 #include <string>
 #include <hare/system_error>
+
+// To avoid typos.
+// see https://www.charset.org/utf-8
+// and https://www.charset.org/charsets/iso-8859-1
+#define UTF8 "UTF-8"
+#define ISO88591 "ISO-8859-1"
 
 namespace hare {
 	class Iconv {

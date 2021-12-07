@@ -78,8 +78,15 @@ namespace hare {
 	 * Some small extensions.
 	 ***************************************************************/
 
-	bool between(const char *value, const char *left, const char *right) {
-		return hare::strcmp(left, value) <= 0 && hare::strcmp(value, right) <= 0;
+	bool between(const char *lower_bound, const char *value, const char *upper_bound) {
+		return hare::strcmp(lower_bound, value) <= 0 && hare::strcmp(value, upper_bound) <= 0;
+	}
+	// additionally takes care if right is smaller than left
+	bool between2(const char *left, const char *value, const char *right) {
+		if (hare::strcmp(left, right) <= 0)
+			return hare::strcmp( left, value) <= 0 && hare::strcmp(value, right) <= 0;
+		else
+			return hare::strcmp(right, value) <= 0 && hare::strcmp(value,  left) <= 0;
 	}
 }	// namespace hare
 

@@ -40,7 +40,7 @@ namespace hare {
 
 			~CURL() { if (m_curl) ::curl_easy_cleanup(m_curl); }
 
-			CURL& operator=(std::CURL *curl) {
+			CURL& operator=(::CURL *curl) {
 				if (m_curl)
 					::curl_easy_cleanup(m_curl);
 				m_curl = curl;
@@ -53,7 +53,7 @@ namespace hare {
 
 			void curl_easy_cleanup() {
 				if (m_curl) {
-					const int result = ::curl_easy_cleanup(m_curl);
+					::curl_easy_cleanup(m_curl);
 					m_curl = 0;
 				}
 			}
@@ -66,6 +66,6 @@ namespace hare {
 
 
 // to avoid accidentally calls
-int curl_easy_cleanup(hare::wrap::CURL &curl) { return curl.curl_easy_cleanup(); }
+void curl_easy_cleanup(hare::wrap::CURL &curl) { curl.curl_easy_cleanup(); }
 
 #endif	// HARE_WRAP_CURL_H

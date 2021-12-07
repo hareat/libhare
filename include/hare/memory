@@ -1,0 +1,27 @@
+#ifndef HARE_MEMORY
+#define HARE_MEMORY
+
+#include <memory>
+
+/***************************************************************
+ * hare/memory handy convenience methods for memory.
+ *
+ * @author Hannes Reisinger github@HaRe.at
+ ***************************************************************/
+
+namespace hare {
+	// to compare the content of shared_ptr-s and not the pointers
+	// name is inspired by std::owner_less and std::equal_to
+	template <class T> struct owner_equal_to {
+		typedef bool result_type;
+		typedef std::shared_ptr<T> first_argument_type;
+		typedef std::shared_ptr<T> second_argument_type;
+
+		bool operator()(const std::shared_ptr<T>& left, const std::shared_ptr<T>& right) const {
+			// also true if both are NULL
+			return left.get() == right.get() || (left && right && *left == *right);
+		}
+	};
+}	// namespace hare
+
+#endif	// HARE_MEMORY

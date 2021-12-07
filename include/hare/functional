@@ -18,6 +18,8 @@ namespace hare {
 	 ***************************************************************/
 
 	struct equal_to {
+		typedef bool result_type;
+
 		template<typename T>
 		bool operator()(const T& t1, const T& t2) const {
 			return t1 == t2;
@@ -28,6 +30,8 @@ namespace hare {
 	};
 
 	struct greater {
+		typedef bool result_type;
+
 		template<typename T>
 		bool operator()(const T& t1, const T& t2) const {
 			return t1 > t2;
@@ -38,6 +42,8 @@ namespace hare {
 	};
 
 	struct greater_equal {
+		typedef bool result_type;
+
 		template<typename T>
 		bool operator()(const T& t1, const T& t2) const {
 			return t1 >= t2;
@@ -48,6 +54,8 @@ namespace hare {
 	};
 
 	struct less {
+		typedef bool result_type;
+
 		template<typename T>
 		bool operator()(const T& t1, const T& t2) const {
 			return t1 < t2;
@@ -58,6 +66,8 @@ namespace hare {
 	};
 
 	struct less_equal {
+		typedef bool result_type;
+
 		template<typename T>
 		bool operator()(const T& t1, const T& t2) const {
 			return t1 <= t2;
@@ -68,6 +78,8 @@ namespace hare {
 	};
 
 	struct not_equal_to {
+		typedef bool result_type;
+
 		template<typename T>
 		bool operator()(const T& t1, const T& t2) const {
 			return t1 != t2;
@@ -76,6 +88,32 @@ namespace hare {
 			return hare::strcmp(sz1, sz2) != 0;
 		}
 	};
+
+
+	/***************************************************************
+	 * Some small extensions.
+	 ***************************************************************/
+
+	// In the sense of a closed interval [left, right] (or inclusive like SQL BETWEEN).
+	template<class T>
+	struct between_t {
+		typedef bool result_type;
+		typedef T argument_type;
+
+		const T& lower_bound, upper_bound;
+		between_t(const T& _lower_bound, const T& _upper_bound) : lower_bound(_lower_bound), upper_bound(_upper_bound) {}
+		bool operator()(const T& value) const { return lower_bound <= value && value <= upper_bound; }
+	};
+	template<class T>
+	between_t<T> betweener(const T& lower_bound, const T& upper_bound) { return between_t<T>(lower_bound, upper_bound); }
+	// additionally takes care if right is smaller than left
+	template<class T>
+	between_t<T> betweener2(const T& left, const T& right) {
+		if (left <= right)
+			return between_t<T>(left, right);
+		else
+			return between_t<T>(right, left);
+	}
 }	// namespace hare
 
 #endif	// HARE_FUNCTIONAL

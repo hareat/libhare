@@ -22,8 +22,8 @@ struct TestHareAlgorithm {
 	}
 
 	static void test_between() {
-		EQUAL_D(1, hare::between(3, 2, 4));
-		EQUAL_D(0, hare::between(33, 2, 4));
+		EQUAL_D(1, hare::between(2,  3, 4));
+		EQUAL_D(0, hare::between(2, 33, 4));
 	}
 
 	static void test() {

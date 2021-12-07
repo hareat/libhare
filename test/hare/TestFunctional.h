@@ -1,5 +1,6 @@
 #include "test.h"
 
+#include <hare/algorithm>
 #include <hare/functional>
 
 #ifdef USE_BOOST
@@ -49,9 +50,27 @@ struct TestHareFunctional {
 		ASSERT(hare::equal_to()(a, a2));
 	}
 
+	static void test_between() {
+		std::vector<int> vi = {1, 2, 3};
+		std::vector<std::string> vs = {"abc", "def", "ghi"};
+
+		ASSERT(hare::all_of(vi, hare::betweener(vi.front(), vi.back())));
+		ASSERT(hare::all_of(vs, hare::betweener(vs.front(), vs.back())));
+
+		ASSERT(!hare::all_of(vi, hare::betweener(vi.front(), 2)));
+		ASSERT(!hare::all_of(vs, hare::betweener(vs.front(), std::string("eee"))));
+
+		// betweener2 takes care of the amount of left and right
+		ASSERT(!hare::all_of(vi, hare::betweener(vi.back(), vi.front())));
+		ASSERT(!hare::all_of(vs, hare::betweener(vs.back(), vs.front())));
+		ASSERT(hare::all_of(vi, hare::betweener2(vi.back(), vi.front())));
+		ASSERT(hare::all_of(vs, hare::betweener2(vs.back(), vs.front())));
+	}
+
 	static void test() {
 		test_int();
 		test_str();
 		test_sz();
+		test_between();
 	}
 };

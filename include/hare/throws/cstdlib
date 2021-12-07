@@ -83,19 +83,19 @@ namespace hare {
 		inline void *calloc(size_t count, size_t size_each) {
 			void * const result = std::calloc(count, size_each);
 			if (result == NULL)		// see (1)
-				throw hare::system_error("%s(%uz, %uz) failed", __func__, count, size_each);
+				throw hare::system_error("%s(%zu, %zu) failed", __func__, count, size_each);
 			return result;
 		}
 		inline void *malloc(size_t size) {
 			void * const result = std::malloc(size);
 			if (result == NULL)		// see (1)
-				throw hare::system_error("%s(%uz) failed", __func__, size);
+				throw hare::system_error("%s(%zu) failed", __func__, size);
 			return result;
 		}
 		inline void *realloc(void *ptr, size_t size) {
 			void * const result = std::realloc(ptr, size);
 			if (result == NULL)		// see (1)
-				throw hare::system_error("%s(%uz) failed", __func__, size);
+				throw hare::system_error("%s(%zu) failed", __func__, size);
 			return result;
 		}
 

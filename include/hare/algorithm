@@ -229,10 +229,18 @@ namespace hare {
 		return sz == nullptr || *sz == '\0';
 	}
 
-	// In the sense of a closed interval [left, right] like SQL BETWEEN.
+	// In the sense of a closed interval [left, right] (or inclusive like SQL BETWEEN).
 	template<class T>
-	bool between(const T& value, const T& left, const T& right) {
-		return left <= value && value <= right;
+	bool between(const T& lower_bound, const T& value, const T& upper_bound) {
+		return lower_bound <= value && value <= upper_bound;
+	}
+	// additionally takes care if right is smaller than left
+	template<class T>
+	bool between2(const T& left, const T& value, const T& right) {
+		if (left <= right)
+			return  left <= value && value <= right;
+		else
+			return right <= value && value <= left;
 	}
 
 
@@ -274,7 +282,7 @@ namespace hare {
 
 	// @return a copy of the container without elements for which pred returns true.
 	template<class Container, class UnaryPredicate>
-	Container remove_copy_if(const Container& container, UnaryPredicate pred) {
+	Container remove_if_copy(const Container& container, UnaryPredicate pred) {
 		Container copy(container);
 		hare::remove_if(copy, pred);
 		return copy;	// maybe return std::move(copy);
@@ -291,6 +299,35 @@ namespace hare {
 			return true;
 		} else
 			return false;
+	}
+
+	// @return true if the container size was modified, false otherwise.
+	template<class Container, class BinaryPredicate>
+	bool unique(Container& container, BinaryPredicate pred)
+	{
+		typename Container::iterator old_end = container.end();
+		typename Container::iterator new_end = std::unique(container.begin(), old_end, pred);
+		if (new_end != old_end) {
+			container.erase(new_end, old_end);
+			return true;
+		} else
+			return false;
+	}
+
+	// @return a copy of the container without duplicate elements.
+	template<class Container, class T>
+	Container unique_copy(const Container& container, const T& value) {
+		Container copy(container);
+		hare::unique(copy, value);
+		return copy;	// maybe return std::move(copy);
+	}
+
+	// @return a copy of the container without duplicate elements for which pred returns true.
+	template<class Container, class BinaryPredicate>
+	Container unique_copy(const Container& container, BinaryPredicate pred) {
+		Container copy(container);
+		hare::unique(copy, pred);
+		return copy;	// maybe return std::move(copy);
 	}
 }	// namespace hare
 
