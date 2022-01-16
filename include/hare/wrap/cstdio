@@ -127,7 +127,7 @@ namespace hare {
 
 
 // to avoid accidentally calls
-int fclose(hare::wrap::FILE &file) { return file.fclose(); }
-int pclose(hare::wrap::PIPE &pipe) { return pipe.pclose(); }
+inline int fclose(hare::wrap::FILE &file) { return file.fclose(); }
+inline int pclose(hare::wrap::PIPE &pipe) { return pipe.pclose(); }
 
 #endif	// HARE_WRAP_CSTDIO

@@ -26,6 +26,8 @@
  * @author Hannes Reisinger github@HaRe.at
  ***************************************************************************/
 
+#include <hare/stdexcept>
+
 namespace hare {
 	namespace wrap {
 		/******************************************************************
@@ -61,11 +63,56 @@ namespace hare {
 			// to use it like a std C CURL pointer
 			operator ::CURL*() const { return m_curl; }
 		};
+
+		/******************************************************************
+		 * hare::wrap::curl_slist encapsulates a std C curl_slist pointer to
+		 * ensure curl_slist_free_all() is called also in case of an exception.
+		 ******************************************************************/
+		class curl_slist {
+			::curl_slist *m_curl_slist;	// the encapsulated std C curl_slist pointer
+		public:
+			curl_slist() : m_curl_slist(0) {}
+			curl_slist(::curl_slist *csl) : m_curl_slist(csl) {}
+
+			~curl_slist() { if (m_curl_slist) ::curl_slist_free_all(m_curl_slist); }
+
+			// use std::shared_ptr instead
+			curl_slist(const curl_slist&) = delete;
+			curl_slist& operator=(const curl_slist&) = delete;
+
+			::curl_slist* curl_slist_append(const char *string) {
+				::curl_slist *tmp = ::curl_slist_append(m_curl_slist, string);
+				if (tmp)
+					m_curl_slist = tmp;
+				return tmp;
+			}
+
+			void curl_slist_free_all() {
+				if (m_curl_slist) {
+					::curl_slist_free_all(m_curl_slist);
+					m_curl_slist = 0;
+				}
+			}
+
+			// to use it like a std C CURL pointer
+			operator ::curl_slist*() const { return m_curl_slist; }
+			::curl_slist* get() const { return m_curl_slist; }
+		};
 	}	// namespace wrap
+
+	namespace throws {
+		inline ::curl_slist* curl_slist_append(hare::wrap::curl_slist &csl, const char *string) {
+			::curl_slist *tmp = m_curl_slist.curl_slist_append(string);
+			if (tmp == NULL)
+				throw hare::runtime_error("%s(%s) failed", __func__, string);
+		}
+	}	// namespace throws
 }	// namespace hare
 
 
 // to avoid accidentally calls
-void curl_easy_cleanup(hare::wrap::CURL &curl) { curl.curl_easy_cleanup(); }
+inline void curl_easy_cleanup(hare::wrap::CURL &curl) { curl.curl_easy_cleanup(); }
+inline ::curl_slist* curl_slist_append(hare::wrap::curl_slist &csl, const char *string) { return csl.curl_slist_append(string); }
+inline void curl_slist_free_all(hare::wrap::curl_slist &csl) { csl.curl_slist_free_all(); }
 
 #endif	// HARE_WRAP_CURL_H

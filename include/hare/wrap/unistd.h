@@ -61,6 +61,6 @@ namespace hare {
 
 
 // to avoid accidentally calls
-int close(hare::wrap::FD &fd) { return fd.close(); }
+inline int close(hare::wrap::FD &fd) { return fd.close(); }
 
 #endif	// HARE_UNISTD_H

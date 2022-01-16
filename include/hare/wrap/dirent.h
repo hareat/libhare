@@ -129,6 +129,6 @@ namespace hare {
 
 
 // to avoid accidentally calls
-int closedir(hare::wrap::DIR &dir) { return dir.closedir(); }
+inline int closedir(hare::wrap::DIR &dir) { return dir.closedir(); }
 
 #endif	// HARE_WRAP_DIRENT_H

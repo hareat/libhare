@@ -75,6 +75,6 @@ namespace hare {
 }	// namespace hare
 
 // to avoid accidentally calls
-int iconv_close(hare::wrap::iconv_t &cd) { return cd.iconv_close(); }
+inline int iconv_close(hare::wrap::iconv_t &cd) { return cd.iconv_close(); }
 
 #endif	// HARE_WRAP_ICONV_H

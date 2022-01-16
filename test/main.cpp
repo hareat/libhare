@@ -57,13 +57,14 @@ int main(const int argc, const char* argv[]) {
 
 		std::puts("All tests completed successfully");
 		return EXIT_SUCCESS;
-	} catch (const hare::backtrace_error& ex) {
-		std::fprintf(stderr, "%s() caught hare::backtrace_error: %s\n", __func__, ex.what());
+	} catch (const hare::system_error& ex) {
+		std::fprintf(stderr, "%s() caught hare::system_error: %s\n", __func__, ex.what());
 		std::fflush(stderr);
-		ex.backtrace_write_addr2line(2);
-		return EXIT_FAILURE;
+		ex.backtrace_addr2line_fd(2);
+	} catch (const std::system_error& ex) {
+		std::fprintf(stderr, "%s() caught hare::system_error: %s\n", __func__, ex.what());
 	} catch (const std::exception& ex) {
 		std::fprintf(stderr, "%s() caught std::exception: %s\n", __func__, ex.what());
-		return EXIT_FAILURE;
 	}
+	return EXIT_FAILURE;
 }

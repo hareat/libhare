@@ -9,112 +9,32 @@
  * @author Hannes Reisinger github@HaRe.at
  **************************************************************************/
 
+#include <hare/execinfo.h>	// backtrace
 #include <hare/strprintf>
-#include <hare/signalsafe/write>
 
 #include <errno.h>
-#ifdef BACKTRACE_SIZE
-#include <execinfo.h>	// backtrace
-#ifdef BACKTRACE_ADDR2LINE
-#include <hare/signalsafe/writef>
-#include <string.h>		// strchr
-#endif	// BACKTRACE_ADDR2LINE
-#endif	// BACKTRACE_SIZE
 
 namespace hare {
 	/**********************************************************************
-	 * A backtrace is often helpful in error analysis.
+	 * In most cases I want to create a system_error with a system_category
+	 * and use the current errno.
+	 * And a backtrace is often helpful in error analysis.
+	 * If compiled with BACKTRACE_SIZE=n the backtrace of the
+	 * exceptional situation is also stored into the system_error
+	 * and can easily be printed by ex.backtrace_write(2).
+	 * Only useful if you compile with -g to use addr2line -e exe addr
 	 **********************************************************************/
-	struct backtrace_error : public std::system_error {
-#ifdef BACKTRACE_SIZE
-	private:
-		void *m_backtrace[BACKTRACE_SIZE];
-		int   m_backtrace_size;
-	public:
-		/******************************************************************
-		 * If compiled with BACKTRACE_SIZE=n the backtrace of the
-		 * exceptional situation is also stored into the system_error
-		 * and can easely be printed by ex.backtrace_write(2).
-		 * Only useful if you compile with -g to use addr2line -e exe addr
-		 ******************************************************************/
-		backtrace_error(std::error_code ec, const std::string& what_arg) : std::system_error(ec, what_arg)
-			{ m_backtrace_size = backtrace(m_backtrace, BACKTRACE_SIZE); }
-		backtrace_error(std::error_code ec, const char* what_arg) : std::system_error(ec, what_arg)
-			{ m_backtrace_size = backtrace(m_backtrace, BACKTRACE_SIZE); }
-		backtrace_error(std::error_code ec) : std::system_error(ec)
-			{ m_backtrace_size = backtrace(m_backtrace, BACKTRACE_SIZE); }
-		backtrace_error(int val, const std::error_category& cat, const std::string& what_arg) : std::system_error(val, cat, what_arg)
-			{ m_backtrace_size = backtrace(m_backtrace, BACKTRACE_SIZE); }
-		backtrace_error(int val, const std::error_category& cat, const char* what_arg) : std::system_error(val, cat, what_arg)
-			{ m_backtrace_size = backtrace(m_backtrace, BACKTRACE_SIZE); }
-		backtrace_error(int val, const std::error_category& cat) : std::system_error(val, cat)
-			{ m_backtrace_size = backtrace(m_backtrace, BACKTRACE_SIZE); }
-
-		char** backtrace_symbols() const { return ::backtrace_symbols(m_backtrace, m_backtrace_size); }
-		void backtrace_write(int fd) const { backtrace_symbols_fd(m_backtrace, m_backtrace_size, fd); }
-		void backtrace_write_addr2line(int fd) const {
-#ifdef BACKTRACE_ADDR2LINE
-			char **symbols = backtrace_symbols();
-			if (symbols) {
-				for (size_t i = 0; i < m_backtrace_size; ++i) {
-					const char *mangled = symbols[i];
-					// format: file(function+offset) [address]
-					const char *pos1 = strchr(mangled, '(');
-					if (pos1) {
-						const char *pos2 = strchr(pos1 + 1, ')');
-						if (pos2) {
-							hare::signalsafe::write(fd, "addr2line -e ");
-							hare::signalsafe::write(fd, mangled, pos1 - mangled);
-							hare::signalsafe::write(fd, " ");
-							hare::signalsafe::write(fd, pos1 + 1, pos2 - pos1 - 1);
-							hare::signalsafe::write(fd, "\n");
-						} else
-							hare::signalsafe::writef(fd, "%s\n", mangled);
-					} else
-						hare::signalsafe::writef(fd, "%s\n", mangled);
-				}
-				free(symbols);
-			} else {
-				backtrace_write(fd);
-				hare::signalsafe::writef(fd, "in %s also %s failed\n", __func__, "backtrace_symbols");
-			}
-#else	// !BACKTRACE_ADDR2LINE
-			backtrace_write(fd);
-#endif	// BACKTRACE_ADDR2LINE
-		}
-#else	// !BACKTRACE_SIZE
-		// just using all constructors
-		using std::system_error::system_error;
-		// instead of tediousand and error prone
-		//backtrace_error(std::error_code ec, const std::string& what_arg) : std::system_error(ec, what_arg) {}
-		//backtrace_error(std::error_code ec, const char* what_arg) : std::system_error(ec, what_arg) {}
-		//backtrace_error(std::error_code ec) : std::system_error(ec) {}
-		//backtrace_error(int val, const std::error_category& cat, const std::string& what_arg) : std::system_error(val, cat, what_arg) {}
-		//backtrace_error(int val, const std::error_category& cat, const char* what_arg) : std::system_error(val, cat, what_arg) {}
-		//backtrace_error(int val, const std::error_category& cat) : std::system_error(val, cat) {}
-
-		char** backtrace_symbols() const { return NULL; }
-		void backtrace_write(int fd) const { hare::signalsafe::write(fd,
-			"No backtrace available. Please compile with -DBACKTRACE_SIZE=<number>\n"); }
-		void backtrace_write_addr2line(int fd) const { backtrace_write(fd); }
-#endif	// BACKTRACE_SIZE
+	struct system_error : public std::system_error, public hare::backtrace {
+		system_error() : std::system_error(errno, std::system_category()) {}
+		system_error(const std::string& what_arg) : std::system_error(errno, std::system_category(), what_arg) {}
+		system_error(const char *what_arg) : std::system_error(errno, std::system_category(), what_arg) {}
+		template<typename ... Args>
+		system_error(const char *format, Args ... args)
+			: std::system_error(errno, std::system_category(), strprintf<256>(format, args ...)) {}
 
 		// useful shortcuts
 		int value() const { return code().value(); }
 		std::string message() const { return code().message(); }
-	};
-
-	/**********************************************************************
-	 * In most cases I want to create a system_error with a system_category
-	 * and use the current errno.
-	 **********************************************************************/
-	struct system_error : public backtrace_error {
-		system_error() : backtrace_error(errno, std::system_category()) {}
-		system_error(const std::string& what_arg) : backtrace_error(errno, std::system_category(), what_arg) {}
-		system_error(const char *what_arg) : backtrace_error(errno, std::system_category(), what_arg) {}
-		template<typename ... Args>
-		system_error(const char *format, Args ... args)
-			: backtrace_error(errno, std::system_category(), strprintf<256>(format, args ...)) {}
 
 		// errno would be nice but I have found no way to do it
 		int errorno() const { return code().value(); }

@@ -10,9 +10,11 @@
  ***************************************************************************/
 
 #include <hare/curl.h>
+#include <hare/execinfo.h>	// backtrace
 #include <hare/stdexcept>
 #include <hare/strprintf>
-#include <hare/system_error>
+
+#include <system_error>
 
 namespace hare {
 	/**********************************************************************
@@ -23,13 +25,13 @@ namespace hare {
 		virtual std::string message(int cc) const { return curl_easy_strerror((CURLcode) cc); }
 	};
 
-	struct curl_error : public backtrace_error {
-		curl_error(const CURLcode cc) : backtrace_error(cc, curl_error_category()) {}
-		curl_error(const CURLcode cc, const std::string& what) : backtrace_error(cc, curl_error_category(), what) {}
-		curl_error(const CURLcode cc, const char *what) : backtrace_error(cc, curl_error_category(), what) {}
+	struct curl_error : public std::system_error, public hare::backtrace {
+		curl_error(const CURLcode cc) : std::system_error(cc, curl_error_category()) {}
+		curl_error(const CURLcode cc, const std::string& what) : std::system_error(cc, curl_error_category(), what) {}
+		curl_error(const CURLcode cc, const char *what) : std::system_error(cc, curl_error_category(), what) {}
 		template<typename ... Args>
 		curl_error(const CURLcode cc, const char *format, Args ... args)
-			: backtrace_error(cc, curl_error_category(), strprintf<256>(format, args ...)) {}
+			: std::system_error(cc, curl_error_category(), strprintf<256>(format, args ...)) {}
 
 		CURLcode curlCode() const { return (CURLcode) code().value(); }
 	};
@@ -142,6 +144,13 @@ namespace hare {
 			if (cc != CURLE_OK)
 				throw curl_error(cc, "%s() failed", __func__);
 			return response_code;
+		}
+
+		inline ::curl_slist* curl_slist_append(::curl_slist *csl, const char *string) {
+			::curl_slist *result = ::curl_slist_append(csl, string);
+			if (result == NULL)
+				throw hare::runtime_error("%s(%s) failed", __func__, string);
+			return result;
 		}
 	}	// namespace throws
 }	// namespace hare
