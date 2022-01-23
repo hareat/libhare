@@ -72,7 +72,7 @@ namespace hare {
 			::curl_slist *m_curl_slist;	// the encapsulated std C curl_slist pointer
 		public:
 			curl_slist() : m_curl_slist(0) {}
-			curl_slist(::curl_slist *csl) : m_curl_slist(csl) {}
+			curl_slist(::curl_slist *list) : m_curl_slist(list) {}
 
 			~curl_slist() { if (m_curl_slist) ::curl_slist_free_all(m_curl_slist); }
 
@@ -94,17 +94,18 @@ namespace hare {
 				}
 			}
 
-			// to use it like a std C CURL pointer
+			// to use it like a std C curl_slist pointer
 			operator ::curl_slist*() const { return m_curl_slist; }
 			::curl_slist* get() const { return m_curl_slist; }
 		};
 	}	// namespace wrap
 
 	namespace throws {
-		inline ::curl_slist* curl_slist_append(hare::wrap::curl_slist &csl, const char *string) {
-			::curl_slist *tmp = m_curl_slist.curl_slist_append(string);
-			if (tmp == NULL)
+		inline ::curl_slist* curl_slist_append(hare::wrap::curl_slist &list, const char *string) {
+			::curl_slist *result = list.curl_slist_append(string);
+			if (result == NULL)
 				throw hare::runtime_error("%s(%s) failed", __func__, string);
+			return result;
 		}
 	}	// namespace throws
 }	// namespace hare
@@ -112,7 +113,7 @@ namespace hare {
 
 // to avoid accidentally calls
 inline void curl_easy_cleanup(hare::wrap::CURL &curl) { curl.curl_easy_cleanup(); }
-inline ::curl_slist* curl_slist_append(hare::wrap::curl_slist &csl, const char *string) { return csl.curl_slist_append(string); }
-inline void curl_slist_free_all(hare::wrap::curl_slist &csl) { csl.curl_slist_free_all(); }
+inline ::curl_slist* curl_slist_append(hare::wrap::curl_slist &list, const char *string) { return list.curl_slist_append(string); }
+inline void curl_slist_free_all(hare::wrap::curl_slist &list) { list.curl_slist_free_all(); }
 
 #endif	// HARE_WRAP_CURL_H

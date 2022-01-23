@@ -25,9 +25,16 @@
 #include <exception>
 #include <cstdio>
 #include <cstdlib>	// EXIT_*
+#include <cxxabi.h>
 
 // use this pointers to avoid warning: null argument where non-null required
 char* const CHAR_PTR_NULL = NULL;
+
+std::string demangle(const char *mangled_name) {
+	int status = -9;	// 0 means success. -1, -2, -3 are declared failures.
+	hare::wrap::auto_free<char> result(abi::__cxa_demangle(mangled_name, NULL, NULL, &status));
+	return (status == 0) ? result.get() : mangled_name;
+}
 
 int main(const int argc, const char* argv[]) {
 	try {
@@ -57,14 +64,13 @@ int main(const int argc, const char* argv[]) {
 
 		std::puts("All tests completed successfully");
 		return EXIT_SUCCESS;
-	} catch (const hare::system_error& ex) {
-		std::fprintf(stderr, "%s() caught hare::system_error: %s\n", __func__, ex.what());
-		std::fflush(stderr);
-		ex.backtrace_addr2line_fd(2);
-	} catch (const std::system_error& ex) {
-		std::fprintf(stderr, "%s() caught hare::system_error: %s\n", __func__, ex.what());
 	} catch (const std::exception& ex) {
-		std::fprintf(stderr, "%s() caught std::exception: %s\n", __func__, ex.what());
+		std::fprintf(stderr, "%s() caught exception %s: %s\n",
+			__func__, demangle(typeid(ex).name()).c_str(), ex.what());
+		std::fflush(stderr);
+		auto bt = dynamic_cast<const hare::backtrace *>(&ex);
+		if (bt)
+			bt->backtrace_addr2line_fd(2);
 	}
 	return EXIT_FAILURE;
 }

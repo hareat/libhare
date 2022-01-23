@@ -10,15 +10,16 @@
  * @author Hannes Reisinger github@HaRe.at
  **************************************************************************/
 
+#include <hare/execinfo.h>	// backtrace
 #include <hare/strprintf>
 
 namespace hare {
-	struct invalid_argument : public std::invalid_argument {
+	struct invalid_argument : public std::invalid_argument, public hare::backtrace {
 		template<typename ... Args>
 		invalid_argument(const char *format, Args ... args)
 			: std::invalid_argument(strprintf<256>(format, args ...)) {}
 	};
-	struct runtime_error : public std::runtime_error {
+	struct runtime_error : public std::runtime_error, public hare::backtrace {
 		template<typename ... Args>
 		runtime_error(const char *format, Args ... args)
 			: std::runtime_error(strprintf<256>(format, args ...)) {}
