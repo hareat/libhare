@@ -44,46 +44,128 @@ namespace hare {
 			return curl;
 		}
 
+		// there is not really a need for CHECK_NOT_NULL_ARG1(curl);
+		// because if NULL CURLE_BAD_FUNCTION_ARGUMENT would be returned
 		template<typename ... Args>
 		inline void curl_easy_setopt(CURL *curl, CURLoption option, Args ... args) {
+			CHECK_NOT_NULL_ARG1(curl);
 			CURLcode const cc = ::curl_easy_setopt(curl, option, args ...);
 			if (cc != CURLE_OK)
 				throw curl_error(cc, "%s(%d=%s) failed", __func__, option, hare::to_sz(option));
 		}
+		inline void curl_easy_setopt(CURL *curl, CURLoption option, long l) {
+			CHECK_NOT_NULL_ARG1(curl);
+			CURLcode const cc = ::curl_easy_setopt(curl, option, l);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(%d=%s, %ld) failed", __func__, option, hare::to_sz(option), l);
+		}
 		inline void curl_set_url(CURL *curl, const char *url) {
-			CHECK_NOT_NULL_ARG1(url);
+			CHECK_NOT_NULL_ARG1(curl);
 			CURLcode const cc = hare::curl_set_url(curl, url);
 			if (cc != CURLE_OK)
 				throw curl_error(cc, "%s(\"%s\") failed", __func__, url);
 		}
 		inline void curl_set_url(CURL *curl, const std::string& url) {
-			CURLcode const cc = hare::curl_set_url(curl, url);
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") failed", __func__, url.c_str());
+			curl_set_url(curl, url.c_str());
 		}
 		inline void curl_set_user_pwd(CURL *curl, const std::string& user, const std::string& pwd) {
+			CHECK_NOT_NULL_ARG1(curl);
 			CURLcode const cc = hare::curl_set_user_pwd(curl, user, pwd);
 			if (cc != CURLE_OK)
 				throw curl_error(cc, "%s() failed", __func__);	// user and pwd are sensitive
 		}
 		inline void curl_set_auth_basic(CURL *curl) {
+			CHECK_NOT_NULL_ARG1(curl);
 			CURLcode const cc = hare::curl_set_auth_basic(curl);
 			if (cc != CURLE_OK)
 				throw curl_error(cc, "%s() failed", __func__);
 		}
 		inline void curl_set_auth_basic(CURL *curl, const std::string& user, const std::string& pwd) {
-			hare::throws::curl_set_auth_basic(curl);
-			hare::throws::curl_set_user_pwd(curl, user, pwd);
+			CHECK_NOT_NULL_ARG1(curl);
+			CURLcode cc = hare::curl_set_auth_basic(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s failed", __func__, "curl_set_auth_basic");
+			cc = hare::curl_set_user_pwd(curl, user, pwd);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s failed", __func__, "curl_set_user_pwd");	// user and pwd are sensitive
 		}
 		inline void curl_set_auth_digest(CURL *curl) {
+			CHECK_NOT_NULL_ARG1(curl);
 			CURLcode const cc = hare::curl_set_auth_digest(curl);
 			if (cc != CURLE_OK)
 				throw curl_error(cc, "%s() failed", __func__);
 		}
 		inline void curl_set_auth_digest(CURL *curl, const std::string& user, const std::string& pwd) {
-			hare::throws::curl_set_auth_digest(curl);
-			hare::throws::curl_set_user_pwd(curl, user, pwd);
+			CHECK_NOT_NULL_ARG1(curl);
+			CURLcode cc = hare::curl_set_auth_digest(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s failed", __func__, "curl_set_auth_digest");
+			cc = hare::curl_set_user_pwd(curl, user, pwd);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s failed", __func__, "curl_set_user_pwd");	// user and pwd are sensitive
 		}
+		inline void curl_easy_perform(CURL *curl) {
+			CHECK_NOT_NULL_ARG1(curl);
+			CURLcode const cc = ::curl_easy_perform(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() failed", __func__);
+		}
+		inline void curl_easy_perform(CURL *curl, const char *url) {
+			CHECK_NOT_NULL_ARG2(curl, url);
+			CURLcode cc = hare::curl_set_url(curl, url);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_perform(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") failed", __func__, url);
+		}
+		inline void curl_easy_perform(CURL *curl, const std::string& url) {
+			curl_easy_perform(curl, url.c_str());
+		}
+		inline long curl_get_response_code(CURL *curl) {
+			CHECK_NOT_NULL_ARG1(curl);
+			long response_code = 0;
+			CURLcode const cc = ::curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() failed", __func__);
+			return response_code;
+		}
+		inline void curl_nobody(CURL *curl, const char *url) {
+			CHECK_NOT_NULL_ARG2(curl, url);
+			CURLcode cc = hare::curl_set_url(curl, url);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_NOBODY");
+			cc = ::curl_easy_perform(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_perform");
+		}
+		inline void curl_nobody(CURL *curl, const std::string& url) {
+			curl_nobody(curl, url.c_str());
+		}
+		inline void curl_post(CURL *curl, const char *url, const std::string& data) {
+			CHECK_NOT_NULL_ARG2(curl, url);
+			CURLcode cc = hare::curl_set_url(curl, url);
+			if (cc != CURLE_OK)
+				// do not throw the data because it could be sensitive
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data.size());
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s %zu failed", __func__, url, "CURLOPT_POSTFIELDSIZE", data.size());
+			// CURLOPT_POSTFIELDS implies CURLOPT_POST
+			cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_POSTFIELDS");
+			cc = ::curl_easy_perform(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_perform");
+		}
+		inline void curl_post(CURL *curl, const std::string& url, const std::string& data) {
+			curl_post(curl, url.c_str(), data);
+		}
+
 		// similar to size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 		inline size_t curl_write_to_string(const char *chunk, size_t size, size_t nmemb, std::string *receiver) {
 			CHECK_NOT_NULL_ARG2(chunk, receiver);
@@ -92,92 +174,148 @@ namespace hare {
 			return chunk_size;
 		}
 		inline void curl_set_write(CURL *curl, std::string& data) {
-			hare::throws::curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-			hare::throws::curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, hare::throws::curl_write_to_string);
+			CHECK_NOT_NULL_ARG1(curl);
+			CURLcode cc = ::curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s failed", __func__, "CURLOPT_WRITEDATA");
+			cc = ::curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, hare::throws::curl_write_to_string);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s failed", __func__, "CURLOPT_WRITEFUNCTION");
+		}
+		inline void curl_httpget(CURL *curl, const char *url, std::string& data) {
+			CHECK_NOT_NULL_ARG2(curl, url);
+			CURLcode cc = hare::curl_set_url(curl, url);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_HTTPGET");
+			cc = ::curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_WRITEDATA");
+			cc = ::curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, hare::throws::curl_write_to_string);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_WRITEFUNCTION");
+			cc = ::curl_easy_perform(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_perform");
+		}
+		inline void curl_httpget(CURL *curl, const std::string& url, std::string& data) {
+			curl_httpget(curl, url.c_str(), data);
 		}
 
-		inline void curl_easy_perform(CURL *curl) {
-			CURLcode const cc = ::curl_easy_perform(curl);
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s() failed", __func__);
+		// similar to size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
+		inline size_t curl_read_from_string(char *chunk, size_t size, size_t nitems, hare::string_pos *sender) {
+			CHECK_NOT_NULL_ARG2(chunk, sender);
+			const size_t chunk_size = size * nitems;
+			const size_t chars_copied = sender->str.copy(chunk, chunk_size, sender->pos);
+			sender->pos += chars_copied;
+			return chars_copied;
 		}
-		inline void curl_easy_perform(CURL *curl, const char *url) {
-			hare::throws::curl_set_url(curl, url);
-			CURLcode const cc = ::curl_easy_perform(curl);
+		inline void curl_set_read(CURL *curl, hare::string_pos& data) {
+			CURLcode cc = ::curl_easy_setopt(curl, CURLOPT_READDATA, &data);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") failed", __func__, url);
+				throw curl_error(cc, "%s() %s failed", __func__, "CURLOPT_READDATA");
+			cc = ::curl_easy_setopt(curl, CURLOPT_INFILESIZE, data.str.size());
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s %zu failed", __func__, "CURLOPT_INFILESIZE", data.str.size());
+			cc = ::curl_easy_setopt(curl, CURLOPT_READFUNCTION, hare::curl_read_from_string);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s() %s failed", __func__, "CURLOPT_READFUNCTION");
 		}
-		inline void curl_easy_perform(CURL *curl, const std::string& url) {
-			hare::throws::curl_set_url(curl, url);
-			CURLcode const cc = ::curl_easy_perform(curl);
+		inline void curl_upload(CURL *curl, const char *url, const std::string& data) {
+			CHECK_NOT_NULL_ARG2(curl, url);
+			CURLcode cc = hare::curl_set_url(curl, url);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") failed", __func__, url.c_str());
+				// do not throw the data because it could be sensitive
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_UPLOAD");
+			hare::string_pos spdata(data);
+			cc = ::curl_easy_setopt(curl, CURLOPT_READDATA, &spdata);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_READDATA");
+			cc = ::curl_easy_setopt(curl, CURLOPT_INFILESIZE, data.size());
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s %zu failed", __func__, url, "CURLOPT_INFILESIZE", data.size());
+			cc = ::curl_easy_setopt(curl, CURLOPT_READFUNCTION, hare::throws::curl_read_from_string);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_READFUNCTION");
+			cc = ::curl_easy_perform(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_perform");
+		}
+		inline void curl_upload(CURL *curl, const std::string& url, const std::string& data) {
+			curl_upload(curl, url.c_str(), data);
+		}
+
+		// some wrappers with better known names
+		inline void curl_head(CURL *curl, const char *url) {
+			CHECK_NOT_NULL_ARG2(curl, url);
+			CURLcode cc = hare::curl_set_url(curl, url);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_setopt");
+			cc = ::curl_easy_perform(curl);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_perform");
 		}
 		inline void curl_head(CURL *curl, const std::string& url) {
+			curl_head(curl, url.c_str());
+		}
+		inline void curl_get(CURL *curl, const char *url, std::string& data) {
+			CHECK_NOT_NULL_ARG2(curl, url);
 			CURLcode cc = hare::curl_set_url(curl, url);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_set_url");
-			cc = ::curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "HEAD");
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_easy_setopt");
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_HTTPGET");
+			cc = ::curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_WRITEDATA");
+			cc = ::curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, hare::throws::curl_write_to_string);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_WRITEFUNCTION");
 			cc = ::curl_easy_perform(curl);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_easy_perform");
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_perform");
 		}
-		inline void curl_delete(CURL *curl, const std::string& url) {
-			CURLcode cc = hare::curl_set_url(curl, url);
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_set_url");
-			cc = ::curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_easy_setopt");
-			cc = ::curl_easy_perform(curl);
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_easy_perform");
+		inline void curl_get(CURL *curl, const std::string& url, std::string& data) {
+			curl_get(curl, url.c_str(), data);
 		}
-		inline void curl_post(CURL *curl, const std::string& url, const std::string& data) {
+		inline void curl_put(CURL *curl, const char *url, const std::string& data) {
+			CHECK_NOT_NULL_ARG2(curl, url);
 			CURLcode cc = hare::curl_set_url(curl, url);
 			if (cc != CURLE_OK)
 				// do not throw the data because it could be sensitive
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str()), "curl_set_url";
-			cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_set_url");
+			cc = ::curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s(%s) failed", __func__, url.c_str(), "curl_easy_setopt", "CURLOPT_POSTFIELDS");
-			cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data.size());
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_UPLOAD");
+			hare::string_pos spdata(data);
+			cc = ::curl_easy_setopt(curl, CURLOPT_READDATA, &spdata);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s(%s, %zu) failed", __func__, url.c_str(), "curl_easy_setopt", "CURLOPT_POSTFIELDSIZE", data.size());
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_READDATA");
+			cc = ::curl_easy_setopt(curl, CURLOPT_INFILESIZE, data.size());
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s %zu failed", __func__, url, "CURLOPT_INFILESIZE", data.size());
+			cc = ::curl_easy_setopt(curl, CURLOPT_READFUNCTION, hare::throws::curl_read_from_string);
+			if (cc != CURLE_OK)
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "CURLOPT_READFUNCTION");
 			cc = ::curl_easy_perform(curl);
 			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_easy_perform");
+				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url, "curl_easy_perform");
 		}
 		inline void curl_put(CURL *curl, const std::string& url, const std::string& data) {
-			CURLcode cc = hare::curl_set_url(curl, url);
-			if (cc != CURLE_OK)
-				// do not throw the data because it could be sensitive
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str()), "curl_set_url";
-			cc = ::curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s(%s) failed", __func__, url.c_str(), "curl_easy_setopt", "CURLOPT_CUSTOMREQUEST");
-			cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s(%s) failed", __func__, url.c_str(), "curl_easy_setopt", "CURLOPT_POSTFIELDS");
-			cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data.size());
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s(%s, %zu) failed", __func__, url.c_str(), "curl_easy_setopt", "CURLOPT_POSTFIELDSIZE", data.size());
-			cc = ::curl_easy_perform(curl);
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s(\"%s\") %s failed", __func__, url.c_str(), "curl_easy_perform");
-		}
-
-		inline long curl_get_response_code(CURL *curl) {
-			long response_code;
-			CURLcode const cc = ::curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-			if (cc != CURLE_OK)
-				throw curl_error(cc, "%s() failed", __func__);
-			return response_code;
+			curl_put(curl, url.c_str(), data);
 		}
 
 		inline ::curl_slist* curl_slist_append(::curl_slist *csl, const char *string) {
+			CHECK_NOT_NULL_ARG1(string);
 			::curl_slist *result = ::curl_slist_append(csl, string);
 			if (result == NULL)
 				throw hare::runtime_error("%s(%s) failed", __func__, string);

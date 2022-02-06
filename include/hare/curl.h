@@ -188,6 +188,29 @@ namespace hare {
 			return cc;
 		return curl_set_user_pwd(curl, user, pwd);
 	}
+	inline CURLcode curl_nobody(CURL *curl, const std::string& url) {
+		CURLcode cc = curl_set_url(curl, url);
+		if (cc != CURLE_OK)
+			return cc;
+		cc = ::curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+		if (cc != CURLE_OK)
+			return cc;
+		return ::curl_easy_perform(curl);
+	}
+	inline CURLcode curl_post(CURL *curl, const std::string& url, const std::string& data) {
+		CURLcode cc = curl_set_url(curl, url);
+		if (cc != CURLE_OK)
+			return cc;
+		cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data.size());
+		if (cc != CURLE_OK)
+			return cc;
+		// CURLOPT_POSTFIELDS implies CURLOPT_POST
+		cc = ::curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+		if (cc != CURLE_OK)
+			return cc;
+		return ::curl_easy_perform(curl);
+	}
+
 	// similar to size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	inline size_t curl_write_to_string(const char *chunk, size_t size, size_t nmemb, std::string *receiver) {
 		const size_t chunk_size = size * nmemb;
@@ -200,6 +223,80 @@ namespace hare {
 		if (cc != CURLE_OK)
 			return cc;
 		return ::curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, hare::curl_write_to_string);
+	}
+	inline CURLcode curl_set_httpget(CURL *curl, std::string& data) {
+		const CURLcode cc = ::curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+		if (cc != CURLE_OK)
+			return cc;
+		return curl_set_write(curl, data);
+	}
+	inline CURLcode curl_httpget(CURL *curl, const std::string& url, std::string& data) {
+		CURLcode cc = curl_set_url(curl, url);
+		if (cc != CURLE_OK)
+			return cc;
+		cc = curl_set_httpget(curl, data);
+		if (cc != CURLE_OK)
+			return cc;
+		return ::curl_easy_perform(curl);
+	}
+
+	// similar to size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
+	struct string_pos {
+		string_pos(const std::string _str) : str(_str), pos(0) {}
+		const std::string str;
+		size_t pos;
+	};
+	inline size_t curl_read_from_string(char *chunk, size_t size, size_t nitems, string_pos *sender) {
+		const size_t chunk_size = size * nitems;
+		size_t chars_copied = 0;
+		if (chunk && sender) {
+			chars_copied = sender->str.copy(chunk, chunk_size, sender->pos);
+			sender->pos += chars_copied;
+		}
+		return chars_copied;
+	}
+	inline CURLcode curl_set_read(CURL *curl, string_pos& data) {
+		CURLcode cc = ::curl_easy_setopt(curl, CURLOPT_READDATA, &data);
+		if (cc != CURLE_OK)
+			return cc;
+		cc = ::curl_easy_setopt(curl, CURLOPT_INFILESIZE, data.str.size());
+		if (cc != CURLE_OK)
+			return cc;
+		return ::curl_easy_setopt(curl, CURLOPT_READFUNCTION, hare::curl_read_from_string);
+	}
+	inline CURLcode curl_set_upload(CURL *curl, string_pos& data) {
+		const CURLcode cc = ::curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+		if (cc != CURLE_OK)
+			return cc;
+		return curl_set_read(curl, data);
+	}
+	inline CURLcode curl_upload(CURL *curl, const std::string& url, const std::string& data) {
+		CURLcode cc = curl_set_url(curl, url);
+		if (cc != CURLE_OK)
+			return cc;
+		string_pos spdata(data);
+		cc = curl_set_upload(curl, spdata);
+		if (cc != CURLE_OK)
+			return cc;
+		return ::curl_easy_perform(curl);
+	}
+
+	// some wrappers with better known names
+	inline CURLcode curl_head(CURL *curl, const std::string& url) {
+		return curl_nobody(curl, url);
+	}
+	inline CURLcode curl_set_get(CURL *curl, std::string& data) {
+		return curl_set_httpget(curl, data);
+	}
+	inline CURLcode curl_get(CURL *curl, const std::string& url, std::string& data) {
+		return curl_httpget(curl, url, data);
+	}
+	// CURLOPT_PUT is deprecated
+	inline CURLcode curl_set_put(CURL *curl, string_pos& data) {
+		return curl_set_upload(curl, data);
+	}
+	inline CURLcode curl_put(CURL *curl, const std::string& url, const std::string& data) {
+		return curl_upload(curl, url, data);
 	}
 }	// namespace hare
 

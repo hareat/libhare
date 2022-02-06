@@ -1,23 +1,24 @@
 #include "test.h"
 
 #include <hare/throws/curl.h>
+#include <hare/wrap/curl.h>
 #include <hare/fstream>	// file_read
 
 struct TestHareThrowsCurl {
 	static void test_get() {
-		CURL *curl = hare::throws::curl_easy_init();
+		hare::wrap::CURL curl(hare::throws::curl_easy_init());
 
 		try {
-			hare::throws::curl_set_url(curl, CHAR_PTR_NULL);
+			hare::throws::curl_set_url(NULL, "https://github.com/");
 			FAIL("should not reach");
 		} catch (const std::invalid_argument& ex) {
-			EQUAL_S("curl_set_url(url is NULL)", ex.what());
+			EQUAL_S("curl_set_url(curl is NULL)", ex.what());
 		}
 		try {
-			hare::throws::curl_easy_perform(curl, "http://does.not.exist/");
+			hare::throws::curl_easy_perform(curl, "http://host.does.not.exist/");
 			FAIL("should not reach");
 		} catch (const hare::curl_error& ex) {
-			EQUAL_S("curl_easy_perform(\"http://does.not.exist/\") failed: Couldn't resolve host name", ex.what());
+			EQUAL_S("curl_easy_perform(\"http://host.does.not.exist/\") failed: Couldn't resolve host name", ex.what());
 		}
 		std::string data;
 		hare::throws::curl_set_write(curl, data);
@@ -26,7 +27,11 @@ struct TestHareThrowsCurl {
 		EQUAL_S(hare::fstream::read("data/readonly.txt"), data);
 	}
 
+	static void test_head() {
+	}
+
 	static void test() {
 		test_get();
+		test_head();
 	}
 };

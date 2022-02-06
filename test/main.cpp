@@ -2,6 +2,7 @@
 #include "hare/TestCstdio.h"
 #include "hare/TestCstdlib.h"
 #include "hare/TestCstring.h"
+#include "hare/TestCurl.h"
 #include "hare/TestFstream.h"
 #include "hare/TestFunctional.h"
 #include "hare/TestIconv.h"
@@ -42,6 +43,7 @@ int main(const int argc, const char* argv[]) {
 		TestHareCstdio::test();
 		TestHareCstdlib::test();
 		TestHareCstring::test();
+		TestHareCurl::test();
 		TestHareFstream::test();
 		TestHareFunctional::test();
 		TestHareIconv::test();
