@@ -167,6 +167,12 @@ namespace hare {
 	inline CURLcode curl_set_url(CURL *curl, const std::string& url) {
 		return curl_set_url(curl, url.c_str());
 	}
+	inline CURLcode curl_set_customrequest(CURL *curl, const char *request) {
+		return ::curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, request);
+	}
+	inline CURLcode curl_set_customrequest(CURL *curl, const std::string& request) {
+		return curl_set_url(curl, request.c_str());
+	}
 	inline CURLcode curl_set_user_pwd(CURL *curl, const std::string& user, const std::string& pwd) {
 		return ::curl_easy_setopt(curl, CURLOPT_USERPWD, (user + ":" + pwd).c_str());
 	}
